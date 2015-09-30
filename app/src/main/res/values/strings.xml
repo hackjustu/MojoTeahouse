@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">MojoTea</string>
+
+    <!-- General Actions -->
+    <string name="action_settings">Settings</string>
+
+    <!-- Navigation Drawer -->
+    <string name="action_open_navigation_drawer">Open navigation drawer</string>
+    <string name="action_close_navigation_drawer">Close navigation drawer</string>
+    <string name="nav_menu_title">Menu</string>
+    <string name="nav_orders_title">Orders</string>
+    <string name="nav_about_title">About &#38; Feedback</string>
+    
+    <!-- Mojo Menu -->
+    <string name="go_to_cart_button_text">Cart %s</string>
+
+</resources>
