@@ -14,10 +14,8 @@ public class Order extends ParseObject {
     private static final String TOTAL_PRICE = "total_price";
     private static final String STATUS = "status";
 
-    private String anonymousUserId;
-
     public Order() {
-        anonymousUserId = "1234";
+
     }
 
     public static ParseQuery<Order> getQuery() {
@@ -26,6 +24,10 @@ public class Order extends ParseObject {
 
     public Date getOrderTime() {
         return getCreatedAt();
+    }
+
+    public void setAnonymousUserId(String anonymousUserId) {
+        put(ANONYMOUS_USER_ID, anonymousUserId);
     }
 
     public String getSummary() {

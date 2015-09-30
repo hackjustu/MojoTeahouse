@@ -31,6 +31,9 @@ public class OrderHistoryItemAdapter extends RecyclerView.Adapter<OrderHistoryIt
     @Override
     public void onBindViewHolder(OrderViewHolder holder, int position) {
         Order order = orderList.get(position);
+
+        holder.summaryText.setText(order.getSummary());
+        holder.priceText.setText("$" + order.getTotalPrice());
     }
 
     @Override
@@ -39,6 +42,15 @@ public class OrderHistoryItemAdapter extends RecyclerView.Adapter<OrderHistoryIt
                 ? 0
                 : orderList.size();
     }
+
+    public void updateOrderList(List<Order> orderList) {
+        if (orderList != null) {
+            this.orderList.clear();
+            this.orderList.addAll(orderList);
+            notifyDataSetChanged();
+        }
+    }
+
 
     protected class OrderViewHolder extends RecyclerView.ViewHolder {
 

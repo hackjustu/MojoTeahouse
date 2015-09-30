@@ -1,9 +1,8 @@
 package com.mojoteahouse.mojotea.activity;
 
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -11,14 +10,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.mojoteahouse.mojotea.R;
-import com.mojoteahouse.mojotea.data.Order;
-import com.parse.ParseException;
-import com.parse.SaveCallback;
+import com.mojoteahouse.mojotea.fragment.MojoMenuFragment;
+import com.mojoteahouse.mojotea.fragment.OrderHistoryFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String TAG_MOJO_MENU = "TAG_MOJO_MENU";
+    private static final String TAG_ORDER_HISTORY = "TAG_ORDER_HISTORY";
+    private static final String TAG_ABOUT = "TAG_ABOUT";
 
     private DrawerLayout navigationDrawer;
     private ActionBarDrawerToggle navigationDrawerToggle;
@@ -30,27 +31,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Order order = new Order();
-                order.setStatus("Completed");
-                order.setTotalPrice(15);
-                order.setSummary("3 items");
-                order.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e != null) {
-                            Snackbar.make(navigationDrawer, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                        } else {
-                            Snackbar.make(navigationDrawer, "Save done!", Snackbar.LENGTH_LONG).show();
-                        }
-                    }
-                });
-            }
-        });
-
         navigationDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationDrawerToggle = new ActionBarDrawerToggle(
                 this, navigationDrawer, toolbar, R.string.action_open_navigation_drawer, R.string.action_close_navigation_drawer);
@@ -58,6 +38,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        updateFragment(TAG_MOJO_MENU);
     }
 
     @Override
@@ -103,19 +89,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         switch (item.getItemId()) {
             case R.id.nav_menu:
-
+                updateFragment(TAG_MOJO_MENU);
                 break;
 
             case R.id.nav_orders:
-
+                updateFragment(TAG_ORDER_HISTORY);
                 break;
 
             case R.id.nav_about:
-
+                updateFragment(TAG_ABOUT);
                 break;
         }
 
         navigationDrawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void updateFragment(String tag) {
+        Fragment fragment = getFragmentManager().findFragmentByTag(tag);
+        switch (tag) {
+            case TAG_MOJO_MENU:
+                if (fragment == null || !(fragment instanceof MojoMenuFragment)) {
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.main_content, MojoMenuFragment.newInstance(), TAG_MOJO_MENU)
+                            .commit();
+                }
+                break;
+
+            case TAG_ORDER_HISTORY:
+                if (fragment == null || !(fragment instanceof OrderHistoryFragment)) {
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.main_content, OrderHistoryFragment.newInstance(), TAG_ORDER_HISTORY)
+                            .commit();
+                }
+                break;
+
+            case TAG_ABOUT:
+                break;
+        }
     }
 }

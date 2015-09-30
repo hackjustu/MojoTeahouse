@@ -2,6 +2,7 @@ package com.mojoteahouse.mojotea;
 
 import android.app.Application;
 
+import com.mojoteahouse.mojotea.data.MojoMenu;
 import com.mojoteahouse.mojotea.data.Order;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
@@ -13,7 +14,8 @@ public class MojoTeaApp extends Application {
     public void onCreate() {
         super.onCreate();
 
-        // Add Order class
+        // Add data classes
+        ParseObject.registerSubclass(MojoMenu.class);
         ParseObject.registerSubclass(Order.class);
 
         // Initialize and setup Parse
