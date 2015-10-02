@@ -25,7 +25,9 @@ public class OrderHistoryFragment extends Fragment {
     private OrderHistoryItemAdapter adapter;
 
     public static OrderHistoryFragment newInstance() {
-        return new OrderHistoryFragment();
+        OrderHistoryFragment fragment = new OrderHistoryFragment();
+        fragment.setRetainInstance(true);
+        return fragment;
     }
 
     public OrderHistoryFragment() {
@@ -46,6 +48,7 @@ public class OrderHistoryFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new OrderHistoryItemAdapter(getActivity(), new ArrayList<Order>());
         recyclerView.setAdapter(adapter);
+        recyclerView.startLayoutAnimation();
 
         return view;
     }

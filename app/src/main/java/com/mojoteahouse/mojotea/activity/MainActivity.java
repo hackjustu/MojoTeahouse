@@ -1,6 +1,7 @@
 package com.mojoteahouse.mojotea.activity;
 
 import android.app.Fragment;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -50,6 +51,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         navigationDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        navigationDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override

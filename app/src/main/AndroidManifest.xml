@@ -12,6 +12,7 @@
     <permission
         android:name="com.mojoteahouse.mojotea.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
+
     <uses-permission android:name="com.mojoteahouse.mojotea.permission.C2D_MESSAGE" />
 
     <application
@@ -31,6 +32,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.EditMojoItemActivity"
+            android:label="@string/edit_mojo_item_activity_name"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name="com.parse.PushService" />
 

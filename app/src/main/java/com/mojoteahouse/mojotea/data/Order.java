@@ -9,17 +9,18 @@ import java.util.Date;
 @ParseClassName("Order")
 public class Order extends ParseObject {
 
-    public static final String ANONYMOUS_USER_ID = "anonymous_user_id";
+    public static final String ANONYMOUS_USER_ID = "anonymousUserId";
+    public static final String ORDER_ID = "orderId";
     private static final String SUMMARY = "summary";
-    private static final String TOTAL_PRICE = "total_price";
+    private static final String TOTAL_PRICE = "totalPrice";
     private static final String STATUS = "status";
-
-    public Order() {
-
-    }
 
     public static ParseQuery<Order> getQuery() {
         return ParseQuery.getQuery(Order.class);
+    }
+
+    public Order() {
+
     }
 
     public Date getOrderTime() {

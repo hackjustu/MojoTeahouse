@@ -1,8 +1,13 @@
 <resources>
-    <string name="app_name">MojoTea</string>
 
-    <!-- General Actions -->
+    <!-- Class Names -->
+    <string name="app_name">MojoTea</string>
+    <string name="edit_mojo_item_activity_name">Edit</string>
+
+    <!-- General Strings -->
     <string name="action_settings">Settings</string>
+    <string name="copyright">Copyright</string>
+    <string name="toolbar_transition">toolbar_transition</string>
 
     <!-- Navigation Drawer -->
     <string name="action_open_navigation_drawer">Open navigation drawer</string>
@@ -12,6 +17,15 @@
     <string name="nav_about_title">About &#38; Feedback</string>
     
     <!-- Mojo Menu -->
-    <string name="go_to_cart_button_text">Cart %s</string>
+    <string name="go_to_cart_button_text">Go to cart (%d)</string>
+
+    <!-- Edit Mojo Item Activity -->
+    <string name="quantity_hint">Quantity</string>
+    <string name="quantity_initial_value">1</string>
+    <string name="toppings_hint">Toppings</string>
+    <string name="add_to_cart_button_text">Add to cart ($%.2f)</string>
+    <string name="quantity_error_message">Quantity should be larger than 0!</string>
+    <string name="get_topping_error_message">Cannot get toppings for this item</string>
+    <string name="add_to_cart_error_message">Cannot add to cart. Please try again.</string>
 
 </resources>

@@ -17,10 +17,12 @@ public class MojoMenuItemAdapter extends RecyclerView.Adapter<MojoMenuItemAdapte
 
     private LayoutInflater layoutInflater;
     private List<MojoMenu> mojoMenuList;
+    private MojoMenuItemClickListener itemClickListener;
 
-    public MojoMenuItemAdapter(Context context, List<MojoMenu> mojoMenuList) {
+    public MojoMenuItemAdapter(Context context, List<MojoMenu> mojoMenuList, MojoMenuItemClickListener itemClickListener) {
         layoutInflater = LayoutInflater.from(context);
         this.mojoMenuList = mojoMenuList;
+        this.itemClickListener = itemClickListener;
     }
 
     @Override
@@ -53,7 +55,12 @@ public class MojoMenuItemAdapter extends RecyclerView.Adapter<MojoMenuItemAdapte
     }
 
 
-    protected class MojoMenuViewHolder extends RecyclerView.ViewHolder {
+    public interface MojoMenuItemClickListener {
+
+        void onItemClicked(MojoMenu mojoMenu);
+    }
+
+    protected class MojoMenuViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView imageView;
         private TextView nameText;
@@ -65,6 +72,14 @@ public class MojoMenuItemAdapter extends RecyclerView.Adapter<MojoMenuItemAdapte
             imageView = (ImageView) itemView.findViewById(R.id.image_view);
             nameText = (TextView) itemView.findViewById(R.id.name_text);
             priceText = (TextView) itemView.findViewById(R.id.price_text);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            MojoMenu mojoMenu = mojoMenuList.get(getLayoutPosition());
+            itemClickListener.onItemClicked(mojoMenu);
         }
     }
 }
