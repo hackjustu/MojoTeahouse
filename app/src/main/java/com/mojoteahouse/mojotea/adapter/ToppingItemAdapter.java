@@ -18,13 +18,15 @@ public class ToppingItemAdapter extends RecyclerView.Adapter<ToppingItemAdapter.
     private LayoutInflater layoutInflater;
     private List<Topping> toppingList;
     private ToppingItemClickListener toppingItemClickListener;
-    private ArrayList<String> selectedToppingList;
+    private List<String> selectedToppingList;
+    private String toppingFormat;
 
     public ToppingItemAdapter(Context context, List<Topping> toppingList, ToppingItemClickListener toppingItemClickListener) {
         layoutInflater = LayoutInflater.from(context);
         this.toppingList = toppingList;
         this.toppingItemClickListener = toppingItemClickListener;
         selectedToppingList = new ArrayList<>();
+        toppingFormat = context.getString(R.string.topping_format);
     }
 
     @Override
@@ -36,7 +38,8 @@ public class ToppingItemAdapter extends RecyclerView.Adapter<ToppingItemAdapter.
     @Override
     public void onBindViewHolder(final ToppingViewHolder holder, final int position) {
         Topping topping = toppingList.get(position);
-        holder.checkedTextView.setText(topping.getName());
+        holder.checkedTextView.setText(String.format(toppingFormat, topping.getName(), topping.getPrice()));
+        holder.checkedTextView.setChecked(selectedToppingList.contains(topping.getName()));
         holder.checkedTextView.setTag(topping);
         holder.checkedTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,13 +64,25 @@ public class ToppingItemAdapter extends RecyclerView.Adapter<ToppingItemAdapter.
                 : toppingList.size();
     }
 
-    public ArrayList<String> getSelectedToppingList() {
+    public List<String> getSelectedToppingList() {
         return selectedToppingList;
     }
 
     public void updateToppingList(List<Topping> toppingList) {
         if (toppingList != null) {
             selectedToppingList.clear();
+            this.toppingList.clear();
+            this.toppingList.addAll(toppingList);
+            notifyDataSetChanged();
+        }
+    }
+
+    public void updateWithSelectedToppingList(List<Topping> toppingList, List<String> selectedToppingList) {
+        if (toppingList != null) {
+            if (selectedToppingList != null) {
+                this.selectedToppingList.clear();
+                this.selectedToppingList.addAll(selectedToppingList);
+            }
             this.toppingList.clear();
             this.toppingList.addAll(toppingList);
             notifyDataSetChanged();

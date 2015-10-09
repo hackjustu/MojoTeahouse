@@ -1,32 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <FrameLayout
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        app:tabIndicatorColor="@color/white"
+        app:tabMode="fixed"
+        android:elevation="@dimen/elevation"
+        app:tabSelectedTextColor="@color/white"
+        app:tabTextColor="@color/text_hint" />
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/mojo_menu_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="true"
-            android:scrollbars="none" />
 
         <Button
             android:id="@+id/go_to_cart_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
             android:background="@drawable/button_state"
-            android:minHeight="60dp"
             android:text="@string/go_to_cart_button_text"
             android:textAppearance="@style/TextAppearance.AppCompat.Button.Normal"
             android:textColor="@color/white"
             android:visibility="gone" />
 
-    </FrameLayout>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/go_to_cart_button" />
+
+    </RelativeLayout>
 
 </LinearLayout>

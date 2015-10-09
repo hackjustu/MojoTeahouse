@@ -6,8 +6,16 @@
 
     <!-- General Strings -->
     <string name="action_settings">Settings</string>
+    <string name="action_done">Done</string>
+    <string name="action_delete">Delete</string>
     <string name="copyright">Copyright</string>
     <string name="toolbar_transition">toolbar_transition</string>
+    <string name="no_network_error_message">No network access. Please connect to internet to get update.</string>
+    <string name="no_network_relaunch_error_message">No network access. Please connect to internet and relaunch.</string>
+
+    <!-- Main Activity -->
+    <string name="loading_data_title">Loading Data</string>
+    <string name="loading_data_message">Loading data, please wait&#8230;</string>
 
     <!-- Navigation Drawer -->
     <string name="action_open_navigation_drawer">Open navigation drawer</string>
@@ -15,17 +23,47 @@
     <string name="nav_menu_title">Menu</string>
     <string name="nav_orders_title">Orders</string>
     <string name="nav_about_title">About &#38; Feedback</string>
-    
+
     <!-- Mojo Menu -->
+    <string name="mojo_menu_price_text">$%.2f</string>
+    <string name="mojo_menu_topping_text">Topping: %s</string>
     <string name="go_to_cart_button_text">Go to cart (%d)</string>
+    <string name="get_mojo_menu_error_message">Cannot get Mojo menu information. Please reopen the page.</string>
+    <string name="mojo_menu_sold_out_message">This item has been sold out! Please select others.</string>
 
     <!-- Edit Mojo Item Activity -->
     <string name="quantity_hint">Quantity</string>
     <string name="quantity_initial_value">1</string>
+    <string name="quantity_customize_text">Customize</string>
     <string name="toppings_hint">Toppings</string>
+    <string name="topping_format">%1$s (%2$.2f)</string>
+    <string name="no_topping_text">No toppings available</string>
     <string name="add_to_cart_button_text">Add to cart ($%.2f)</string>
-    <string name="quantity_error_message">Quantity should be larger than 0!</string>
     <string name="get_topping_error_message">Cannot get toppings for this item</string>
     <string name="add_to_cart_error_message">Cannot add to cart. Please try again.</string>
+
+    <!-- Cart Activity -->
+    <string name="cart_toolbar_title">Cart</string>
+    <string name="back_button_text">&#60; Back</string>
+    <string name="next_button_text">Next &#62;</string>
+    <string name="place_order_button_text">Place Order</string>
+
+    <!-- Edit Cart Item Activity -->
+    <string name="edit_done_button_text">Done ($%.2f)</string>
+    <string name="get_cart_item_error_message">Cannot get information about this item. Please reopen the page.</string>
+    <string name="edit_cart_item_error_message">Cannot update the changes for this item. Please try again.</string>
+    <string name="delete_cart_item_dialog_message">Do you really want to delete this item ?</string>
+    <string name="delete_failed_error_message">Delete item failed. Please try again.</string>
+
+    <!-- Cart Summary Fragment -->
+    <string name="quantity_format">x %d</string>
+    <string name="price_format">$%.2f</string>
+    <string name="get_order_item_error_message">Cannot retrieve order summary details. Please reopen the page.</string>
+    <string name="action_mode_title_format">%d Selected</string>
+    <string name="delete_item_dialog_title">Delete Confirmation</string>
+    <string name="delete_selected_item_dialog_message">Do you really want to delete the selected item(s) ?</string>
+
+    <!-- Order History -->
+    <string name="get_order_history_error_message">Cannot get order history information. Please reopen the page.</string>
 
 </resources>

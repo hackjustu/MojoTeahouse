@@ -11,7 +11,7 @@
         android:layout_height="?android:attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="@dimen/elevation"
-        app:navigationIcon="?android:attr/homeAsUpIndicator"
+        app:navigationIcon="@drawable/ic_back"
         app:title="@string/copyright"
         app:titleTextAppearance="@style/Toolbar.SmallTextAppearance" />
 

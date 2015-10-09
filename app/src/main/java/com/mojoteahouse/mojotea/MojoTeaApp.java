@@ -2,6 +2,7 @@ package com.mojoteahouse.mojotea;
 
 import android.app.Application;
 
+import com.mojoteahouse.mojotea.data.MojoImage;
 import com.mojoteahouse.mojotea.data.MojoMenu;
 import com.mojoteahouse.mojotea.data.Order;
 import com.mojoteahouse.mojotea.data.OrderItem;
@@ -17,16 +18,21 @@ public class MojoTeaApp extends Application {
     public static final String MOJO_MENU_GROUP = "MOJO_MENU_GROUP";
     public static final String ORDER_HISTORY_GROUP = "ORDER_HISTORY_GROUP";
     public static final String ORDER_ITEM_GROUP = "ORDER_ITEM_GROUP";
-    public static final String CART_DETAILS_GROUP = "CART_DETAILS_GROUP";
     public static final String TOPPING_GROUP = "TOPPING_GROUP";
+    public static final String MOJO_IMAGE_GROUP = "MOJO_IMAGE_GROUP";
 
-    public static final String PREF_EXISTING_ORDER = "PREF_EXISTING_ORDER";
+    public static final String PREF_REMOTE_DATA_LOADED = "PREF_REMOTE_DATA_LOADED";
+    public static final String PREF_MOJO_MENU_CATEGORY_SET = "PREF_MOJO_MENU_CATEGORY_SET";
+    public static final String PREF_LAST_SYNC_TIMESTAMP = "PREF_LAST_SYNC_TIMESTAMP";
+    public static final String PREF_LOCAL_ORDER_ITEM_COUNT = "PREF_LOCAL_ORDER_ITEM_COUNT";
+    public static final String PREF_LOCAL_ORDER_ITEM_CONTENT_SET = "PREF_LOCAL_ORDER_ITEM_CONTENT_SET";
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         // Add data classes
+        ParseObject.registerSubclass(MojoImage.class);
         ParseObject.registerSubclass(MojoMenu.class);
         ParseObject.registerSubclass(Order.class);
         ParseObject.registerSubclass(Topping.class);

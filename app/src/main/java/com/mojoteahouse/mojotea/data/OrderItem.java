@@ -1,7 +1,6 @@
 package com.mojoteahouse.mojotea.data;
 
 import com.parse.ParseClassName;
-import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
@@ -11,10 +10,12 @@ import java.util.List;
 public class OrderItem extends ParseObject {
 
     public static final String ORDER_ITEM_ID = "orderItemId";
-    private static final String IMAGE = "image";
+    private static final String ASSOCIATED_MOJO_MENU = "associatedMojoMenu";
     private static final String NAME = "name";
-    private static final String PRICE = "price";
+    private static final String TOTAL_PRICE = "totalPrice";
+    private static final String QUANTITY = "quantity";
     private static final String SELECTED_TOPPINGS = "selectedToppings";
+    private static final String SELECTED_TOPPING_PRICE = "selectedToppingPrice";
 
     public static ParseQuery<OrderItem> getQuery() {
         return ParseQuery.getQuery(OrderItem.class);
@@ -24,20 +25,20 @@ public class OrderItem extends ParseObject {
 
     }
 
-    public long getOrderItemId() {
-        return getLong(ORDER_ITEM_ID);
+    public String getOrderItemId() {
+        return getString(ORDER_ITEM_ID);
     }
 
-    public void setOrderItemId(long orderItemId) {
+    public void setOrderItemId(String orderItemId) {
         put(ORDER_ITEM_ID, orderItemId);
     }
 
-    public ParseFile getImage() {
-        return getParseFile(IMAGE);
+    public MojoMenu getAssociatedMojoMenu() {
+        return (MojoMenu) getParseObject(ASSOCIATED_MOJO_MENU);
     }
 
-    public void setImage(ParseFile image) {
-        put(IMAGE, image);
+    public void setAssociatedMojoMenu(MojoMenu mojoMenu) {
+        put(ASSOCIATED_MOJO_MENU, mojoMenu);
     }
 
     public String getName() {
@@ -48,12 +49,20 @@ public class OrderItem extends ParseObject {
         put(NAME, name);
     }
 
-    public double getPrice() {
-        return getDouble(PRICE);
+    public double getTotalPrice() {
+        return getDouble(TOTAL_PRICE);
     }
 
-    public void setPrice(double price) {
-        put(PRICE, price);
+    public void setTotalPrice(double price) {
+        put(TOTAL_PRICE, price);
+    }
+
+    public int getQuantity() {
+        return getInt(QUANTITY);
+    }
+
+    public void setQuantity(int quantity) {
+        put(QUANTITY, quantity);
     }
 
     public List<String> getSelectedToppingsList() {
@@ -62,5 +71,13 @@ public class OrderItem extends ParseObject {
 
     public void setSelectedToppingsList(List<String> selectedToppingsList) {
         put(SELECTED_TOPPINGS, selectedToppingsList);
+    }
+
+    public double getSelectedToppingPrice() {
+        return getDouble(SELECTED_TOPPING_PRICE);
+    }
+
+    public void setSelectedToppingPrice(double price) {
+        put(SELECTED_TOPPING_PRICE, price);
     }
 }

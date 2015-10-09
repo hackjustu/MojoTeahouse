@@ -36,6 +36,15 @@
             android:name=".activity.EditMojoItemActivity"
             android:label="@string/edit_mojo_item_activity_name"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.CartActivity"
+            android:label="@string/cart_toolbar_title"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity.EditCartItemActivity"
+            android:label="@string/edit_mojo_item_activity_name"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name="com.parse.PushService" />
 

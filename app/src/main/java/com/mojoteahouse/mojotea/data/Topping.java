@@ -7,7 +7,7 @@ import com.parse.ParseQuery;
 @ParseClassName("Topping")
 public class Topping extends ParseObject {
 
-    public static final String TOPPING_ID = "toppingId";
+    private static final String TOPPING_ID = "toppingId";
     private static final String NAME = "name";
     private static final String PRICE = "price";
 

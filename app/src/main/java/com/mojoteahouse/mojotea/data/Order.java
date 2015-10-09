@@ -5,15 +5,16 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.util.Date;
+import java.util.List;
 
 @ParseClassName("Order")
 public class Order extends ParseObject {
 
     public static final String ANONYMOUS_USER_ID = "anonymousUserId";
-    public static final String ORDER_ID = "orderId";
     private static final String SUMMARY = "summary";
     private static final String TOTAL_PRICE = "totalPrice";
     private static final String STATUS = "status";
+    private static final String ORDER_ITEM_LIST = "ORDER_ITEM_LIST";
 
     public static ParseQuery<Order> getQuery() {
         return ParseQuery.getQuery(Order.class);
@@ -35,23 +36,15 @@ public class Order extends ParseObject {
         return getString(SUMMARY);
     }
 
-    public void setSummary(String summary) {
-        put(SUMMARY, summary);
-    }
-
     public double getTotalPrice() {
         return getDouble(TOTAL_PRICE);
-    }
-
-    public void setTotalPrice(double totalPrice) {
-        put(TOTAL_PRICE, totalPrice);
     }
 
     public String getStatus() {
         return getString(STATUS);
     }
 
-    public void setStatus(String status) {
-        put(STATUS, status);
+    public List<OrderItem> getOrderItemList() {
+        return getList(ORDER_ITEM_LIST);
     }
 }

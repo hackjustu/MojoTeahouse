@@ -2,15 +2,17 @@
 <resources>
 
     <color name="primary">#673AB7</color>
-    <color name="primary_dark">#311B92</color>
-    <color name="accent">#2196F3</color>
+    <color name="primary_dark">#4527A0</color>
+    <color name="light_primary">#B39DDB</color>
+    <color name="accent">#AB47BC</color>
     <color name="control_normal">#DADDE0</color>
-    <color name="control_activated">#2196F3</color>
+    <color name="control_activated">#AB47BC</color>
     <color name="control_highlight">#8997AD</color>
+    <color name="background_normal">#EFEFEF</color>
 
     <color name="white">#ffffff</color>
     <color name="text_hint">#aaaaaa</color>
     <color name="text_normal">#333333</color>
-    <color name="button_pressed">#81D4FA</color>
+    <color name="button_pressed">#F48FB1</color>
 
 </resources>
