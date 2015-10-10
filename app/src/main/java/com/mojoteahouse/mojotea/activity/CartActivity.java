@@ -6,18 +6,24 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.mojoteahouse.mojotea.R;
 import com.mojoteahouse.mojotea.fragment.CartCustomerDetailFragment;
 import com.mojoteahouse.mojotea.fragment.CartSummaryFragment;
+import com.mojoteahouse.mojotea.fragment.PlaceOrderDialogFragment;
 
-public class CartActivity extends AppCompatActivity implements View.OnClickListener {
+public class CartActivity extends AppCompatActivity implements View.OnClickListener,
+        PlaceOrderDialogFragment.PlaceOrderListener {
 
     private static final String TAG_SUMMARY = "TAG_SUMMARY";
     private static final String TAG_CUSTOMER_DETAIL = "TAG_CUSTOMER_DETAIL";
+    private static final String TAG_PLACE_ORDER_DIALOG = "TAG_PLACE_ORDER_DIALOG";
 
     private ViewSwitcher buttonViewSwitcher;
 
@@ -59,12 +65,24 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.back_button:
                 updateFragment(TAG_SUMMARY, true);
                 buttonViewSwitcher.setDisplayedChild(0);
+                hideKeyboard();
                 break;
 
             case R.id.place_order_button:
-
+                CartCustomerDetailFragment customerDetailFragment
+                        = (CartCustomerDetailFragment) getFragmentManager().findFragmentByTag(TAG_CUSTOMER_DETAIL);
+                if (customerDetailFragment == null) {
+                    Toast.makeText(this, R.string.place_order_error_message, Toast.LENGTH_LONG).show();
+                } else if (customerDetailFragment.checkAllFields()) {
+                    updateFragment(TAG_PLACE_ORDER_DIALOG, false);
+                }
                 break;
         }
+    }
+
+    @Override
+    public void onPlaceOrderConfirmed() {
+        Log.e("mojo", "place order confirmed!");
     }
 
     private void updateFragment(String tag, boolean showAnimation) {
@@ -94,6 +112,20 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
                             .commit();
                 }
                 break;
+
+            case TAG_PLACE_ORDER_DIALOG:
+                PlaceOrderDialogFragment placeOrderDialogFragment
+                        = (PlaceOrderDialogFragment) getFragmentManager().findFragmentByTag(TAG_PLACE_ORDER_DIALOG);
+                if (placeOrderDialogFragment == null) {
+                    placeOrderDialogFragment = PlaceOrderDialogFragment.newInstance();
+                }
+                placeOrderDialogFragment.show(getFragmentManager(), TAG_PLACE_ORDER_DIALOG);
+                break;
         }
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(buttonViewSwitcher.getWindowToken(), 0);
     }
 }

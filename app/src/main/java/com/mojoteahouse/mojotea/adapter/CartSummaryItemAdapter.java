@@ -27,20 +27,20 @@ public class CartSummaryItemAdapter extends ArrayAdapter<OrderItem> {
 
     private LayoutInflater layoutInflater;
     private List<OrderItem> orderItemList;
-    private SummaryItemClickListener summaryItemClickListener;
     private String quantityFormat;
     private String priceFormat;
+    private int backgroundNormal;
+    private int backgroundSelected;
     private SparseBooleanArray selectedItemPositions;
 
-    public CartSummaryItemAdapter(Context context,
-                                  List<OrderItem> orderItemList,
-                                  SummaryItemClickListener summaryItemClickListener) {
+    public CartSummaryItemAdapter(Context context, List<OrderItem> orderItemList) {
         super(context, R.layout.cart_summary_list_item, orderItemList);
         layoutInflater = LayoutInflater.from(context);
         this.orderItemList = orderItemList;
-        this.summaryItemClickListener = summaryItemClickListener;
         quantityFormat = context.getString(R.string.quantity_format);
         priceFormat = context.getString(R.string.price_format);
+        backgroundNormal = context.getResources().getColor(R.color.white);
+        backgroundSelected = context.getResources().getColor(R.color.light_primary);
         selectedItemPositions = new SparseBooleanArray();
     }
 
@@ -82,16 +82,10 @@ public class CartSummaryItemAdapter extends ArrayAdapter<OrderItem> {
         holder.toppingText.setText(DataUtils.getToppingListString(orderItem.getSelectedToppingsList()));
         holder.priceText.setText(String.format(priceFormat, orderItem.getTotalPrice()));
         if (selectedItemPositions.get(position)) {
-            holder.summaryLayout.setActivated(true);
+            holder.summaryLayout.setBackgroundColor(backgroundSelected);
         } else {
-            holder.summaryLayout.setActivated(false);
+            holder.summaryLayout.setBackgroundColor(backgroundNormal);
         }
-        holder.summaryLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                summaryItemClickListener.onSummaryItemClicked(orderItem);
-            }
-        });
 
         return convertView;
     }
@@ -113,19 +107,27 @@ public class CartSummaryItemAdapter extends ArrayAdapter<OrderItem> {
         }
     }
 
+    public OrderItem getOrderItemAtPosition(int position) {
+        return orderItemList.get(position);
+    }
+
     public void clearSelection() {
         selectedItemPositions.clear();
         notifyDataSetChanged();
     }
 
-    public void setSelectionAtPosition(int position, boolean value) {
-        if (value) {
+    public void setSelectionAtPosition(int position, boolean selected) {
+        if (selected) {
             selectedItemPositions.put(position, true);
         } else {
             selectedItemPositions.delete(position);
         }
 
         notifyDataSetChanged();
+    }
+
+    public boolean isSelectedAtPosition(int position) {
+        return selectedItemPositions.get(position, false);
     }
 
     public int getSelectedCount() {
@@ -136,11 +138,6 @@ public class CartSummaryItemAdapter extends ArrayAdapter<OrderItem> {
         return selectedItemPositions;
     }
 
-
-    public interface SummaryItemClickListener {
-
-        void onSummaryItemClicked(OrderItem orderItem);
-    }
 
     private class CartSummaryViewHolder {
 

@@ -35,7 +35,7 @@
             android:layout_height="60dp"
             android:layout_alignParentBottom="true"
             android:animateLayoutChanges="true"
-            android:background="#efefef">
+            android:background="@color/button_layout_background">
 
             <Button
                 android:id="@+id/next_button"

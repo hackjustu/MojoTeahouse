@@ -145,6 +145,34 @@ public class MojoMenuFragment extends BaseFragment implements View.OnClickListen
         }
         MojoMenuTabsAdapter tabsAdapter = new MojoMenuTabsAdapter(mojoMenuCategories, recyclerViews);
         viewPager.setAdapter(tabsAdapter);
+        // Temporary fix for tab text blink upon changing page
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout) {
+            int mScrollState;
+            int mScrollPosition;
+            float mScrollOffset;
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+                mScrollState = state;
+            }
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset,
+                                       int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                mScrollPosition = position;
+                mScrollOffset = positionOffset;
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                if (mScrollState != ViewPager.SCROLL_STATE_IDLE) {
+                    tabLayout.setScrollPosition(mScrollPosition, mScrollOffset, false);
+                }
+            }
+        });
         tabLayout.post(new Runnable() {
             @Override
             public void run() {

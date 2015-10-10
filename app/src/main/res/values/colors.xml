@@ -8,11 +8,11 @@
     <color name="control_normal">#DADDE0</color>
     <color name="control_activated">#AB47BC</color>
     <color name="control_highlight">#8997AD</color>
-    <color name="background_normal">#EFEFEF</color>
 
-    <color name="white">#ffffff</color>
-    <color name="text_hint">#aaaaaa</color>
+    <color name="white">#FFFFFF</color>
+    <color name="text_hint">#AAAAAA</color>
     <color name="text_normal">#333333</color>
     <color name="button_pressed">#F48FB1</color>
+    <color name="button_layout_background">#DDDDDD</color>
 
 </resources>

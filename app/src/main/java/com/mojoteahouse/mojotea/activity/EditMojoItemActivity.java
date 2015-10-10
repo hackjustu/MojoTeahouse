@@ -136,6 +136,7 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
                 String selectedItem = parent.getItemAtPosition(position).toString();
                 if (getString(R.string.quantity_customize_text).equals(selectedItem)) {
                     quantityViewSwitcher.setDisplayedChild(DISPLAY_QUANTITY_EDIT_TEXT);
+                    quantityEditText.setText("");
                     quantityEditText.requestFocus();
                     InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputMethodManager.showSoftInput(quantityEditText, InputMethodManager.SHOW_IMPLICIT);

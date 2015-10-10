@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,11 +30,13 @@ import com.parse.ParseQuery;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CartSummaryFragment extends Fragment implements CartSummaryItemAdapter.SummaryItemClickListener {
+public class CartSummaryFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     private static final int REQUEST_CODE_EDIT_ITEM = 1;
 
-    private CartSummaryItemAdapter cartSummaryItemAdapter;
+    private ListView listView;
+    private CartSummaryItemAdapter itemAdapter;
+    private SummaryActionModeCallback summaryActionModeCallback;
     private ActionMode actionMode;
 
     public static CartSummaryFragment newInstance() {
@@ -45,16 +49,22 @@ public class CartSummaryFragment extends Fragment implements CartSummaryItemAdap
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        summaryActionModeCallback = new SummaryActionModeCallback();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cart_summary, container, false);
 
-        ListView listView = (ListView) view.findViewById(R.id.summary_list);
-        cartSummaryItemAdapter = new CartSummaryItemAdapter(getActivity(), new ArrayList<OrderItem>(), this);
-        listView.setAdapter(cartSummaryItemAdapter);
-        listView.setMultiChoiceModeListener(new SummaryActionModeListener());
+        listView = (ListView) view.findViewById(R.id.summary_list);
+        itemAdapter = new CartSummaryItemAdapter(getActivity(), new ArrayList<OrderItem>());
+        listView.setAdapter(itemAdapter);
+        listView.setOnItemClickListener(this);
+        listView.setOnItemLongClickListener(this);
 
         return view;
     }
@@ -66,14 +76,34 @@ public class CartSummaryFragment extends Fragment implements CartSummaryItemAdap
     }
 
     @Override
-    public void onSummaryItemClicked(OrderItem orderItem) {
-        Intent intent = new Intent(getActivity(), EditCartItemActivity.class);
-        intent.putExtra(EditCartItemActivity.EXTRA_ORDER_ITEM_ID, orderItem.getOrderItemId());
-        intent.putExtra(EditCartItemActivity.EXTRA_QUANTITY, orderItem.getQuantity());
-        ArrayList<String> selectedToppings = new ArrayList<>();
-        selectedToppings.addAll(orderItem.getSelectedToppingsList());
-        intent.putStringArrayListExtra(EditCartItemActivity.EXTRA_SELECTED_TOPPINGS, selectedToppings);
-        startActivityForResult(intent, REQUEST_CODE_EDIT_ITEM);
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.e("mojo", "list item clicked with actionmode: " + (actionMode == null ? "NULL" : "NOT Null"));
+        if (actionMode != null) {
+            itemAdapter.setSelectionAtPosition(position, !itemAdapter.isSelectedAtPosition(position));
+            actionMode.setTitle(String.format(getString(R.string.action_mode_title_format), itemAdapter.getSelectedCount()));
+        } else {
+            OrderItem orderItem = itemAdapter.getOrderItemAtPosition(position);
+            Intent intent = new Intent(getActivity(), EditCartItemActivity.class);
+            intent.putExtra(EditCartItemActivity.EXTRA_ORDER_ITEM_ID, orderItem.getOrderItemId());
+            intent.putExtra(EditCartItemActivity.EXTRA_QUANTITY, orderItem.getQuantity());
+            ArrayList<String> selectedToppings = new ArrayList<>();
+            selectedToppings.addAll(orderItem.getSelectedToppingsList());
+            intent.putStringArrayListExtra(EditCartItemActivity.EXTRA_SELECTED_TOPPINGS, selectedToppings);
+            startActivityForResult(intent, REQUEST_CODE_EDIT_ITEM);
+        }
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        if (actionMode == null) {
+            itemAdapter.setSelectionAtPosition(position, !itemAdapter.isSelectedAtPosition(position));
+            listView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
+            listView.startActionMode(summaryActionModeCallback);
+        } else {
+            listView.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
+            actionMode.finish();
+        }
+        return false;
     }
 
     @Override
@@ -92,26 +122,21 @@ public class CartSummaryFragment extends Fragment implements CartSummaryItemAdap
                 if (e != null) {
                     Toast.makeText(getActivity(), R.string.get_order_item_error_message, Toast.LENGTH_LONG).show();
                 } else {
-                    cartSummaryItemAdapter.updateOrderItemList(orderItems);
+                    itemAdapter.updateOrderItemList(orderItems);
                 }
             }
         });
     }
 
 
-    private class SummaryActionModeListener implements AbsListView.MultiChoiceModeListener {
-
-        @Override
-        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-            cartSummaryItemAdapter.setSelectionAtPosition(position, checked);
-            mode.setTitle(String.format(getString(R.string.action_mode_title_format), cartSummaryItemAdapter.getSelectedCount()));
-        }
+    private class SummaryActionModeCallback implements ActionMode.Callback {
 
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater menuInflater = mode.getMenuInflater();
             menuInflater.inflate(R.menu.cart_summary_action_mode_menu, menu);
             actionMode = mode;
+            actionMode.setTitle(String.format(getString(R.string.action_mode_title_format), itemAdapter.getSelectedCount()));
             return true;
         }
 
@@ -132,7 +157,7 @@ public class CartSummaryFragment extends Fragment implements CartSummaryItemAdap
 
         @Override
         public void onDestroyActionMode(ActionMode mode) {
-            cartSummaryItemAdapter.clearSelection();
+            itemAdapter.clearSelection();
             actionMode = null;
         }
 
@@ -145,7 +170,6 @@ public class CartSummaryFragment extends Fragment implements CartSummaryItemAdap
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            cartSummaryItemAdapter.clearSelection();
                             actionMode.finish();
                         }
                     })

@@ -67,6 +67,7 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
     private RecyclerView toppingsRecyclerView;
     private ToppingItemAdapter toppingItemAdapter;
     private TextView noToppingTextView;
+    private SharedPreferences sharedPreferences;
     private String orderItemId;
     private OrderItem localOrderItem;
     private MojoMenu localMojoMenu;
@@ -87,6 +88,7 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         Intent launchIntent = getIntent();
         orderItemId = launchIntent.getStringExtra(EXTRA_ORDER_ITEM_ID);
         quantity = launchIntent.getIntExtra(EXTRA_QUANTITY, 0);
@@ -98,10 +100,11 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
         editDoneButton.setOnClickListener(this);
 
         final ViewSwitcher quantityViewSwitcher = (ViewSwitcher) findViewById(R.id.quantity_view_switcher);
+        final EditText quantityEditText = (EditText) findViewById(R.id.quantity_edit_text);
         if (quantity > SPINNER_MAX_VALUE) {
+            quantityEditText.setText(String.valueOf(quantity));
             quantityViewSwitcher.setDisplayedChild(DISPLAY_QUANTITY_EDIT_TEXT);
         }
-        final EditText quantityEditText = (EditText) findViewById(R.id.quantity_edit_text);
         quantityEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -152,6 +155,7 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
                 String selectedItem = parent.getItemAtPosition(position).toString();
                 if (getString(R.string.quantity_customize_text).equals(selectedItem)) {
                     quantityViewSwitcher.setDisplayedChild(DISPLAY_QUANTITY_EDIT_TEXT);
+                    quantityEditText.setText("");
                     quantityEditText.requestFocus();
                     InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputMethodManager.showSoftInput(quantityEditText, InputMethodManager.SHOW_IMPLICIT);
@@ -186,6 +190,10 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                cancelAndFinish();
+                break;
+
             case R.id.action_delete:
                 DeleteCartItemDialogFragment fragment = (DeleteCartItemDialogFragment) getFragmentManager().findFragmentByTag(TAG_DELETE_DIALOG);
                 if (fragment == null) {
@@ -194,12 +202,6 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
                 }
                 break;
         }
-        return true;
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        cancelAndFinish();
         return true;
     }
 
@@ -223,8 +225,10 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onDeleteConfirmed() {
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final Set<String> orderItemIdSet = sharedPreferences.getStringSet(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_CONTENT_SET, new HashSet<String>());
+        final Set<String> orderItemIdSet = sharedPreferences.getStringSet(
+                MojoTeaApp.PREF_LOCAL_ORDER_ITEM_CONTENT_SET, new HashSet<String>());
+        int totalOrderItemCount = sharedPreferences.getInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, 0);
+        final int newOrderItemCount = totalOrderItemCount - localOrderItem.getQuantity();
         for (final String orderItemString : orderItemIdSet) {
             if (orderItemId.equals(orderItemString.split(SPLIT_SYMBOL)[0])) {
                 localOrderItem.unpinInBackground(MojoTeaApp.ORDER_ITEM_GROUP, new DeleteCallback() {
@@ -234,7 +238,10 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
                             Toast.makeText(EditCartItemActivity.this, R.string.delete_failed_error_message, Toast.LENGTH_LONG).show();
                         } else {
                             orderItemIdSet.remove(orderItemString);
-                            sharedPreferences.edit().putStringSet(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_CONTENT_SET, orderItemIdSet).apply();
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putStringSet(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_CONTENT_SET, orderItemIdSet);
+                            editor.putInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, newOrderItemCount);
+                            editor.apply();
                             setResult(RESULT_OK);
                             finish();
                         }
@@ -327,6 +334,8 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
     private void saveOrderItemAndFinish() {
         List<String> selectedToppings = toppingItemAdapter.getSelectedToppingList();
         Collections.sort(selectedToppings);
+        int totalCount = sharedPreferences.getInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, 0);
+        final int newCount = totalCount - localOrderItem.getQuantity() + quantity;
         localOrderItem.setQuantity(quantity);
         localOrderItem.setSelectedToppingPrice(toppingPrice);
         localOrderItem.setSelectedToppingsList(selectedToppings);
@@ -338,6 +347,7 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
                     Toast.makeText(EditCartItemActivity.this, R.string.edit_cart_item_error_message, Toast.LENGTH_LONG).show();
                     cancelAndFinish();
                 } else {
+                    sharedPreferences.edit().putInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, newCount).apply();
                     setResult(RESULT_OK);
                     finish();
                 }

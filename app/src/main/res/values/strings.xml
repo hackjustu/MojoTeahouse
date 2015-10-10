@@ -7,6 +7,7 @@
     <!-- General Strings -->
     <string name="action_settings">Settings</string>
     <string name="action_done">Done</string>
+    <string name="action_next">Next</string>
     <string name="action_delete">Delete</string>
     <string name="copyright">Copyright</string>
     <string name="toolbar_transition">toolbar_transition</string>
@@ -47,6 +48,9 @@
     <string name="back_button_text">&#60; Back</string>
     <string name="next_button_text">Next &#62;</string>
     <string name="place_order_button_text">Place Order</string>
+    <string name="place_order_error_message">An error occurred when placing order. Please try again!</string>
+    <string name="place_order_dialog_title">Place Order Confirmation</string>
+    <string name="place_order_dialog_message">Do you want to place this order?</string>
 
     <!-- Edit Cart Item Activity -->
     <string name="edit_done_button_text">Done ($%.2f)</string>
@@ -62,6 +66,17 @@
     <string name="action_mode_title_format">%d Selected</string>
     <string name="delete_item_dialog_title">Delete Confirmation</string>
     <string name="delete_selected_item_dialog_message">Do you really want to delete the selected item(s) ?</string>
+
+    <!-- Customer Detail Fragment -->
+    <string name="name_hint">Name</string>
+    <string name="address_hint">Address</string>
+    <string name="phone_hint">Phone</string>
+    <string name="deliver_time_hint">Deliver By</string>
+    <string name="note_hint">Note</string>
+    <string name="name_error_message">Please enter your name</string>
+    <string name="address_error_message">Please enter your valid address</string>
+    <string name="phone_error_message">Please enter a valid phone number</string>
+    <string name="deliver_time_error_message">Deliver time cannot be in the past or fewer than 15 minutes from now!</string>
 
     <!-- Order History -->
     <string name="get_order_history_error_message">Cannot get order history information. Please reopen the page.</string>
