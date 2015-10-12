@@ -1,5 +1,8 @@
 package com.mojoteahouse.mojotea.util;
 
+import android.content.Context;
+import android.provider.Settings;
+
 import com.mojoteahouse.mojotea.data.MojoMenu;
 
 import java.util.ArrayList;
@@ -32,5 +35,9 @@ public class DataUtils {
             }
         }
         return sb.toString();
+    }
+
+    public static String getDeviceId(Context context) {
+        return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 }

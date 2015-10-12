@@ -13,9 +13,9 @@
     <string name="toolbar_transition">toolbar_transition</string>
     <string name="no_network_error_message">No network access. Please connect to internet to get update.</string>
     <string name="no_network_relaunch_error_message">No network access. Please connect to internet and relaunch.</string>
+    <string name="no_network_place_order_error_message">No network access. Please connect to internet to place order.</string>
 
     <!-- Main Activity -->
-    <string name="loading_data_title">Loading Data</string>
     <string name="loading_data_message">Loading data, please wait&#8230;</string>
 
     <!-- Navigation Drawer -->
@@ -25,11 +25,11 @@
     <string name="nav_orders_title">Orders</string>
     <string name="nav_about_title">About &#38; Feedback</string>
 
-    <!-- Mojo Menu -->
+    <!-- Mojo Menu Fragment -->
     <string name="mojo_menu_price_text">$%.2f</string>
     <string name="mojo_menu_topping_text">Topping: %s</string>
     <string name="go_to_cart_button_text">Go to cart (%d)</string>
-    <string name="get_mojo_menu_error_message">Cannot get Mojo menu information. Please reopen the page.</string>
+    <string name="fetch_remote_data_error_message">Cannot fetch enough information from the server. Please reopen the page.</string>
     <string name="mojo_menu_sold_out_message">This item has been sold out! Please select others.</string>
 
     <!-- Edit Mojo Item Activity -->
@@ -48,9 +48,11 @@
     <string name="back_button_text">&#60; Back</string>
     <string name="next_button_text">Next &#62;</string>
     <string name="place_order_button_text">Place Order</string>
+    <string name="place_order_no_item_error_message">There is nothing in your cart!</string>
     <string name="place_order_error_message">An error occurred when placing order. Please try again!</string>
     <string name="place_order_dialog_title">Place Order Confirmation</string>
     <string name="place_order_dialog_message">Do you want to place this order?</string>
+    <string name="placing_order_data_message">Placing order, please wait&#8230;</string>
 
     <!-- Edit Cart Item Activity -->
     <string name="edit_done_button_text">Done ($%.2f)</string>
@@ -78,7 +80,17 @@
     <string name="phone_error_message">Please enter a valid phone number</string>
     <string name="deliver_time_error_message">Deliver time cannot be in the past or fewer than 15 minutes from now!</string>
 
-    <!-- Order History -->
+    <!-- Post Order Activity -->
+    <string name="got_it_button_text">Got It!</string>
+    <string name="order_price_format">Total: $%.2f</string>
+    <string name="order_deliver_time_format">Deliver by %s today</string>
+    <string name="question_text">Questions?</string>
+    <string name="contact_text">Contact Mr. Mojo</string>
+
+    <!-- Order History Fragment -->
     <string name="get_order_history_error_message">Cannot get order history information. Please reopen the page.</string>
+    <string name="no_order_text">No order available for review.</string>
+    <string name="today_text">Today, </string>
+    <string name="order_summary_additional_count_format"> &#38; %d more&#8230;</string>
 
 </resources>

@@ -9,17 +9,17 @@ import android.os.Bundle;
 
 import com.mojoteahouse.mojotea.R;
 
-public class PlaceOrderDialogFragment extends DialogFragment {
+public class ConfirmOrderDialogFragment extends DialogFragment {
 
     private PlaceOrderListener placeOrderListener;
 
-    public static PlaceOrderDialogFragment newInstance() {
-        PlaceOrderDialogFragment fragment = new PlaceOrderDialogFragment();
+    public static ConfirmOrderDialogFragment newInstance() {
+        ConfirmOrderDialogFragment fragment = new ConfirmOrderDialogFragment();
         fragment.setRetainInstance(true);
         return fragment;
     }
 
-    public PlaceOrderDialogFragment() {
+    public ConfirmOrderDialogFragment() {
 
     }
 

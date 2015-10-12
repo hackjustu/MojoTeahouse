@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 app:hintTextAppearance="@style/TextAppearance.AppCompat.Hint">
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/name_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 app:hintTextAppearance="@style/TextAppearance.AppCompat.Hint">
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/address_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 app:hintTextAppearance="@style/TextAppearance.AppCompat.Hint">
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/phone_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -163,7 +163,7 @@
                 android:layout_height="wrap_content"
                 app:hintTextAppearance="@style/TextAppearance.AppCompat.Hint">
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/note_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

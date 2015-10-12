@@ -12,7 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -174,7 +173,7 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
         toppingsRecyclerView = (RecyclerView) findViewById(R.id.toppings_recycler_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         toppingsRecyclerView.setLayoutManager(linearLayoutManager);
-        toppingItemAdapter = new ToppingItemAdapter(EditCartItemActivity.this, new ArrayList<Topping>(), this);
+        toppingItemAdapter = new ToppingItemAdapter(this, new ArrayList<Topping>(), this);
         toppingsRecyclerView.setAdapter(toppingItemAdapter);
         noToppingTextView = (TextView) findViewById(R.id.no_topping_text);
 
@@ -260,7 +259,6 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void done(OrderItem orderItem, ParseException e) {
                 if (e != null) {
-                    Log.e("mojo", "error loading order item: " + e.getMessage());
                     Toast.makeText(EditCartItemActivity.this, R.string.get_cart_item_error_message, Toast.LENGTH_LONG).show();
                     cancelAndFinish();
                 } else {
@@ -316,6 +314,7 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
                         toppingItemAdapter.updateWithSelectedToppingList(toppingList, selectedToppings);
                         noToppingTextView.setVisibility(View.GONE);
                         toppingsRecyclerView.setVisibility(View.VISIBLE);
+                        toppingItemAdapter.notifyDataSetChanged();
                     } else {
                         noToppingTextView.setVisibility(View.VISIBLE);
                     }

@@ -195,7 +195,7 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void done(MojoMenu mojoMenu, ParseException e) {
                 if (e != null) {
-                    Toast.makeText(EditMojoItemActivity.this, R.string.get_mojo_menu_error_message, Toast.LENGTH_LONG).show();
+                    Toast.makeText(EditMojoItemActivity.this, R.string.fetch_remote_data_error_message, Toast.LENGTH_LONG).show();
                     cancelAndFinish();
                 } else {
                     localMojoMenu = mojoMenu;

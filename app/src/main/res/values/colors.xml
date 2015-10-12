@@ -14,5 +14,6 @@
     <color name="text_normal">#333333</color>
     <color name="button_pressed">#F48FB1</color>
     <color name="button_layout_background">#DDDDDD</color>
+    <color name="green_background">#1DE9B6</color>
 
 </resources>

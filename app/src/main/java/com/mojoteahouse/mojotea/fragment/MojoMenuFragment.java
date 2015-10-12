@@ -97,6 +97,12 @@ public class MojoMenuFragment extends BaseFragment implements View.OnClickListen
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadDataInBackground();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        totalCount = 0;
         updateButtonText(sharedPreferences.getInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, 0));
     }
 
@@ -188,7 +194,7 @@ public class MojoMenuFragment extends BaseFragment implements View.OnClickListen
             @Override
             public void done(List<MojoMenu> mojoMenuList, ParseException e) {
                 if (e != null) {
-                    Toast.makeText(getActivity(), R.string.get_mojo_menu_error_message, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.fetch_remote_data_error_message, Toast.LENGTH_LONG).show();
                 } else {
                     setupDataAdapters(mojoMenuList);
                 }

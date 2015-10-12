@@ -16,7 +16,7 @@ import com.parse.ParseUser;
 public class MojoTeaApp extends Application {
 
     public static final String MOJO_MENU_GROUP = "MOJO_MENU_GROUP";
-    public static final String ORDER_HISTORY_GROUP = "ORDER_HISTORY_GROUP";
+    public static final String ORDER_GROUP = "ORDER_GROUP";
     public static final String ORDER_ITEM_GROUP = "ORDER_ITEM_GROUP";
     public static final String TOPPING_GROUP = "TOPPING_GROUP";
     public static final String MOJO_IMAGE_GROUP = "MOJO_IMAGE_GROUP";

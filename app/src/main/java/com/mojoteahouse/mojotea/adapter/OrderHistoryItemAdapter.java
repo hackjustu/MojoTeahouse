@@ -8,18 +8,30 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mojoteahouse.mojotea.R;
+import com.mojoteahouse.mojotea.activity.CartActivity;
 import com.mojoteahouse.mojotea.data.Order;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class OrderHistoryItemAdapter extends RecyclerView.Adapter<OrderHistoryItemAdapter.OrderViewHolder> {
 
     private LayoutInflater layoutInflater;
     private List<Order> orderList;
+    private String orderSummaryFormat;
+    private String orderPriceFormat;
+    private String todayString;
+    private SimpleDateFormat simpleDateFormat;
 
     public OrderHistoryItemAdapter(Context context, List<Order> orderList) {
         layoutInflater = LayoutInflater.from(context);
         this.orderList = orderList;
+        orderSummaryFormat = context.getString(R.string.order_summary_additional_count_format);
+        orderPriceFormat = context.getString(R.string.order_price_format);
+        todayString = context.getString(R.string.today_text);
+        simpleDateFormat = new SimpleDateFormat("MMM dd yyyy", Locale.US);
     }
 
     @Override
@@ -32,8 +44,31 @@ public class OrderHistoryItemAdapter extends RecyclerView.Adapter<OrderHistoryIt
     public void onBindViewHolder(OrderViewHolder holder, int position) {
         Order order = orderList.get(position);
 
-        holder.summaryText.setText(order.getSummary());
-        holder.priceText.setText("$" + order.getTotalPrice());
+        String orderTimeString = order.getOrderTime();
+        String[] dateStrings = orderTimeString.split(", ");
+        Date today = new Date();
+        if (dateStrings[1].equals(simpleDateFormat.format(today))) {
+            orderTimeString = todayString + dateStrings[2];
+        }
+        holder.orderTimeText.setText(orderTimeString);
+        holder.orderPriceText.setText(String.format(orderPriceFormat, order.getTotalPrice()));
+
+        List<String> completeOrderList = order.getCompleteOrderList();
+        StringBuilder stringBuilder = new StringBuilder();
+        String orderItemName;
+        for (int i = 0; i < completeOrderList.size(); i++) {
+            orderItemName = completeOrderList.get(i).split(CartActivity.NAME_SPLIT_SYMBOL)[0];
+            if (i == 0) {
+                stringBuilder.append(orderItemName);
+            } else if (i == 1) {
+                stringBuilder.append(", ")
+                        .append(orderItemName);
+            } else {
+                stringBuilder.append(String.format(orderSummaryFormat, completeOrderList.size() - 2));
+                break;
+            }
+        }
+        holder.orderSummaryText.setText(stringBuilder.toString());
     }
 
     @Override
@@ -54,14 +89,16 @@ public class OrderHistoryItemAdapter extends RecyclerView.Adapter<OrderHistoryIt
 
     protected class OrderViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView summaryText;
-        private TextView priceText;
+        private TextView orderTimeText;
+        private TextView orderSummaryText;
+        private TextView orderPriceText;
 
         public OrderViewHolder(View itemView) {
             super(itemView);
 
-            summaryText = (TextView) itemView.findViewById(R.id.summary_text);
-            priceText = (TextView) itemView.findViewById(R.id.price_text);
+            orderTimeText = (TextView) itemView.findViewById(R.id.order_time_text);
+            orderSummaryText = (TextView) itemView.findViewById(R.id.order_summary_text);
+            orderPriceText = (TextView) itemView.findViewById(R.id.order_price_text);
         }
     }
 }

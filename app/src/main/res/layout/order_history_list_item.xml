@@ -1,63 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/order_card_view"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="120dp"
+    android:background="?attr/selectableItemBackground"
     android:clickable="true"
-    android:focusable="true"
-    android:foreground="?attr/selectableItemBackground"
-    app:cardCornerRadius="4dp"
-    app:cardElevation="6dp"
-    app:cardUseCompatPadding="true"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
-    app:contentPadding="12dp">
+    android:orientation="horizontal"
+    android:paddingBottom="10dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="20dp">
 
-    <FrameLayout
-        android:id="@+id/content_frame"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/order_time_text"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Time: 09/28/15 4:30" />
-
-            <TextView
-                android:id="@+id/summary_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Summary: 1 boba tea / 1 popcorn chicken" />
-
-            <TextView
-                android:id="@+id/price_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Price: $11.5" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Status: completed" />
-
-        </LinearLayout>
-
-        <ImageButton
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:src="@android:drawable/ic_menu_delete"
-            android:layout_gravity="bottom|end"/>
+            android:fontFamily="@string/roboto_medium"
+            android:textColor="@color/accent"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-    </FrameLayout>
+        <TextView
+            android:id="@+id/order_summary_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:singleLine="false"
+            android:textColor="@color/text_normal"
+            android:textSize="16sp" />
 
-</android.support.v7.widget.CardView>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/order_price_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textColor="@color/text_hint"
+        android:textSize="17sp" />
+
+</LinearLayout>

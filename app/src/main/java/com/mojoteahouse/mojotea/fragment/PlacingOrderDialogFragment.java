@@ -7,22 +7,22 @@ import android.support.v7.app.AlertDialog;
 
 import com.mojoteahouse.mojotea.R;
 
-public class LoadingDialogFragment extends DialogFragment {
+public class PlacingOrderDialogFragment extends DialogFragment {
 
-    public static LoadingDialogFragment newInstance() {
-        LoadingDialogFragment fragment = new LoadingDialogFragment();
+    public static PlacingOrderDialogFragment newInstance() {
+        PlacingOrderDialogFragment fragment = new PlacingOrderDialogFragment();
         fragment.setRetainInstance(true);
         return fragment;
     }
 
-    public LoadingDialogFragment() {
+    public PlacingOrderDialogFragment() {
 
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setView(R.layout.fragment_dialog_loading)
+        builder.setView(R.layout.fragment_dialog_placing_order)
                 .setCancelable(false);
         Dialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);

@@ -16,6 +16,14 @@
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
         <item name="android:windowSharedElementReenterTransition">@android:transition/move</item>
         <item name="android:windowSharedElementReturnTransition">@android:transition/move</item>
+        <item name="android:datePickerDialogTheme">@style/Theme.Dialog</item>
+        <item name="android:timePickerDialogTheme">@style/Theme.Dialog</item>
+    </style>
+
+    <style name="Theme.Dialog" parent="android:Theme.Material.Light.Dialog">
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorAccent">@color/accent</item>
     </style>
 
 </resources>

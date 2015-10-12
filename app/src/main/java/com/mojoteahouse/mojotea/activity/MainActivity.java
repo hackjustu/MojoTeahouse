@@ -25,6 +25,7 @@ import com.mojoteahouse.mojotea.MojoTeaApp;
 import com.mojoteahouse.mojotea.R;
 import com.mojoteahouse.mojotea.data.MojoImage;
 import com.mojoteahouse.mojotea.data.MojoMenu;
+import com.mojoteahouse.mojotea.data.Order;
 import com.mojoteahouse.mojotea.data.Topping;
 import com.mojoteahouse.mojotea.fragment.LoadingDialogFragment;
 import com.mojoteahouse.mojotea.fragment.MojoMenuFragment;
@@ -44,6 +45,8 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         MojoMenuFragment.GoToCartClickListener {
 
+    public static final String EXTRA_SHOW_ORDER_PAGE = "EXTRA_SHOW_ORDER_PAGE";
+
     private static final String TAG_MOJO_MENU = "TAG_MOJO_MENU";
     private static final String TAG_ORDER_HISTORY = "TAG_ORDER_HISTORY";
     private static final String TAG_ABOUT = "TAG_ABOUT";
@@ -56,8 +59,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout navigationDrawer;
     private ActionBarDrawerToggle navigationDrawerToggle;
     private SharedPreferences sharedPreferences;
-
-    private boolean isNetworkConnected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,31 +80,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        isNetworkConnected = (activeNetworkInfo != null) && (activeNetworkInfo.isConnected());
+        boolean isNetworkConnected = (activeNetworkInfo != null) && (activeNetworkInfo.isConnected());
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if (!isNetworkConnected) {
+            showErrorMessage(R.string.no_network_relaunch_error_message);
+        } else {
+            showLoadingDialog();
+            if (!sharedPreferences.contains(MojoTeaApp.PREF_REMOTE_DATA_LOADED)) {
+                sharedPreferences.edit().putBoolean(MojoTeaApp.PREF_REMOTE_DATA_LOADED, true).apply();
+                fetchRemoteDataToLocal();
+            } else {
+                syncLocalDataWithRemote();
+            }
+        }
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         navigationDrawerToggle.syncState();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (!isNetworkConnected) {
-            showErrorMessage(R.string.no_network_relaunch_error_message);
-        } else {
-            if (!sharedPreferences.contains(MojoTeaApp.PREF_REMOTE_DATA_LOADED)) {
-                sharedPreferences.edit().putBoolean(MojoTeaApp.PREF_REMOTE_DATA_LOADED, true).apply();
-                showLoadingDialog();
-                fetchRemoteDataToLocal();
-            } else {
-                syncLocalDataWithRemote();
-            }
-        }
     }
 
     @Override
@@ -206,13 +202,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void showLoadingDialog() {
         Fragment fragment = getFragmentManager().findFragmentByTag(TAG_LOADING);
-        if (fragment == null || !(fragment instanceof LoadingDialogFragment)) {
+        if (fragment == null) {
             LoadingDialogFragment.newInstance().show(getFragmentManager(), TAG_LOADING);
         }
     }
 
     private void dismissLoadingDialog() {
-        LoadingDialogFragment loadingFragment = (LoadingDialogFragment) getFragmentManager().findFragmentByTag(TAG_LOADING);
+        LoadingDialogFragment loadingFragment
+                = (LoadingDialogFragment) getFragmentManager().findFragmentByTag(TAG_LOADING);
         if (loadingFragment != null) {
             loadingFragment.dismiss();
         }
@@ -236,35 +233,62 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (e == null) {
                     ParseObject.pinAllInBackground(MojoTeaApp.MOJO_IMAGE_GROUP, mojoImageList);
                 }
+                fetchRemoteMojoMenuInfo();
+            }
+        });
+    }
 
-                ParseQuery<MojoMenu> mojoMenuQuery = MojoMenu.getQuery();
-                mojoMenuQuery.findInBackground(new FindCallback<MojoMenu>() {
-                    @Override
-                    public void done(final List<MojoMenu> mojoMenuList, ParseException e) {
-                        if (e != null) {
-                            dismissLoadingDialog();
-                            showErrorMessage(R.string.get_mojo_menu_error_message);
-                        } else {
-                            ParseObject.pinAllInBackground(MojoTeaApp.MOJO_MENU_GROUP, mojoMenuList, new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-                                    dismissLoadingDialog();
-                                    if (e != null) {
-                                        showErrorMessage(R.string.get_mojo_menu_error_message);
-                                    } else {
-                                        Set<String> categorySet = new HashSet<>();
-                                        categorySet.addAll(DataUtils.getMojoMenuCategoryList(mojoMenuList));
-                                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                                        editor.putStringSet(MojoTeaApp.PREF_MOJO_MENU_CATEGORY_SET, categorySet);
-                                        editor.putLong(MojoTeaApp.PREF_LAST_SYNC_TIMESTAMP, new Date().getTime());
-                                        editor.apply();
-                                        updateFragment(TAG_MOJO_MENU, false);
-                                    }
-                                }
-                            });
+    private void fetchRemoteMojoMenuInfo() {
+        ParseQuery<MojoMenu> mojoMenuQuery = MojoMenu.getQuery();
+        mojoMenuQuery.findInBackground(new FindCallback<MojoMenu>() {
+            @Override
+            public void done(final List<MojoMenu> mojoMenuList, ParseException e) {
+                if (e != null) {
+                    showErrorMessage(R.string.fetch_remote_data_error_message);
+                    fetchRemoteOrderInfo();
+                } else {
+                    ParseObject.pinAllInBackground(MojoTeaApp.MOJO_MENU_GROUP, mojoMenuList, new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) {
+                                showErrorMessage(R.string.fetch_remote_data_error_message);
+                            } else {
+                                Set<String> categorySet = new HashSet<>();
+                                categorySet.addAll(DataUtils.getMojoMenuCategoryList(mojoMenuList));
+                                sharedPreferences.edit().putStringSet(MojoTeaApp.PREF_MOJO_MENU_CATEGORY_SET, categorySet).apply();
+                            }
+                            fetchRemoteOrderInfo();
                         }
-                    }
-                });
+                    });
+                }
+            }
+        });
+    }
+
+    private void fetchRemoteOrderInfo() {
+        ParseQuery<Order> orderQuery = Order.getQuery();
+        orderQuery.whereEqualTo(Order.ANONYMOUS_USER_ID, DataUtils.getDeviceId(this));
+        orderQuery.findInBackground(new FindCallback<Order>() {
+            @Override
+            public void done(List<Order> orderList, ParseException e) {
+                if (e != null) {
+                    dismissLoadingDialog();
+                    showErrorMessage(R.string.fetch_remote_data_error_message);
+                } else {
+                    ParseObject.pinAllInBackground(MojoTeaApp.ORDER_GROUP, orderList, new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            dismissLoadingDialog();
+                            if (e != null) {
+                                showErrorMessage(R.string.fetch_remote_data_error_message);
+                            } else {
+                                sharedPreferences.edit().putLong(MojoTeaApp.PREF_LAST_SYNC_TIMESTAMP, new Date().getTime()).apply();
+                            }
+
+                            showInitialFragment(false);
+                        }
+                    });
+                }
             }
         });
     }
@@ -295,6 +319,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        syncLocalMojoMenuInfo(lastUpdatedDate);
+    }
+
+    private void syncLocalMojoMenuInfo(final Date lastUpdatedDate) {
         ParseQuery<MojoMenu> remoteMojoMenuQuery = MojoMenu.getQuery();
         remoteMojoMenuQuery.whereGreaterThan(UPDATED_AT, lastUpdatedDate);
         remoteMojoMenuQuery.findInBackground(new FindCallback<MojoMenu>() {
@@ -310,15 +338,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     ParseObject.pinAllInBackground(MojoTeaApp.MOJO_MENU_GROUP, mojoMenuList, new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
-                            updateFragment(TAG_MOJO_MENU, true);
+                            syncLocalOrderInfo(lastUpdatedDate);
                         }
                     });
                 } else {
-                    updateFragment(TAG_MOJO_MENU, false);
+                    syncLocalOrderInfo(lastUpdatedDate);
+                }
+            }
+        });
+    }
+
+    private void syncLocalOrderInfo(Date lastUpdatedDate) {
+        ParseQuery<Order> remoteOrderQuery = Order.getQuery();
+        remoteOrderQuery.whereEqualTo(Order.ANONYMOUS_USER_ID, DataUtils.getDeviceId(this))
+                .whereGreaterThan(UPDATED_AT, lastUpdatedDate);
+        remoteOrderQuery.findInBackground(new FindCallback<Order>() {
+            @Override
+            public void done(final List<Order> orderList, ParseException e) {
+                if (e == null && !orderList.isEmpty()) {
+                    ParseObject.pinAllInBackground(MojoTeaApp.MOJO_MENU_GROUP, orderList, new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            dismissLoadingDialog();
+                            showInitialFragment(true);
+                        }
+                    });
+                } else {
+                    dismissLoadingDialog();
+                    showInitialFragment(true);
                 }
             }
         });
 
         sharedPreferences.edit().putLong(MojoTeaApp.PREF_LAST_SYNC_TIMESTAMP, new Date().getTime()).apply();
+    }
+
+    private void showInitialFragment(boolean createNewFragment) {
+        if (getIntent().hasExtra(EXTRA_SHOW_ORDER_PAGE)) {
+            updateFragment(TAG_ORDER_HISTORY, createNewFragment);
+        } else {
+            updateFragment(TAG_MOJO_MENU, createNewFragment);
+        }
     }
 }

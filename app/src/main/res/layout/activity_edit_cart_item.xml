@@ -79,13 +79,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp">
 
-                <Spinner
+                <android.support.v7.widget.AppCompatSpinner
                     android:id="@+id/quantity_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:entries="@array/quantity_array" />
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/quantity_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -106,14 +106,13 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:animateLayoutChanges="true">
+                android:layout_height="match_parent">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/toppings_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="54dp"
+                    android:layout_marginBottom="60dp"
                     android:layout_marginTop="12dp"
                     android:scrollbars="none"
                     android:visibility="gone" />

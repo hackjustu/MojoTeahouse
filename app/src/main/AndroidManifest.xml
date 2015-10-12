@@ -25,6 +25,7 @@
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,6 +45,9 @@
         <activity
             android:name=".activity.EditCartItemActivity"
             android:label="@string/edit_mojo_item_activity_name"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.PostOrderActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name="com.parse.PushService" />

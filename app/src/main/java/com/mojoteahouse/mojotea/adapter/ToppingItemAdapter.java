@@ -39,22 +39,8 @@ public class ToppingItemAdapter extends RecyclerView.Adapter<ToppingItemAdapter.
     public void onBindViewHolder(final ToppingViewHolder holder, final int position) {
         Topping topping = toppingList.get(position);
         holder.checkedTextView.setText(String.format(toppingFormat, topping.getName(), topping.getPrice()));
-        holder.checkedTextView.setChecked(selectedToppingList.contains(topping.getName()));
         holder.checkedTextView.setTag(topping);
-        holder.checkedTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.checkedTextView.setChecked(!holder.checkedTextView.isChecked());
-                Topping currentTopping = (Topping) holder.checkedTextView.getTag();
-                if (holder.checkedTextView.isChecked()) {
-                    selectedToppingList.add(currentTopping.getName());
-                    toppingItemClickListener.onToppingItemClicked(currentTopping.getPrice());
-                } else {
-                    selectedToppingList.remove(currentTopping.getName());
-                    toppingItemClickListener.onToppingItemClicked(-currentTopping.getPrice());
-                }
-            }
-        });
+        holder.checkedTextView.setChecked(selectedToppingList.contains(topping.getName()));
     }
 
     @Override
@@ -95,7 +81,7 @@ public class ToppingItemAdapter extends RecyclerView.Adapter<ToppingItemAdapter.
         void onToppingItemClicked(double toppingPrice);
     }
 
-    protected class ToppingViewHolder extends RecyclerView.ViewHolder {
+    protected class ToppingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private CheckedTextView checkedTextView;
 
@@ -103,6 +89,20 @@ public class ToppingItemAdapter extends RecyclerView.Adapter<ToppingItemAdapter.
             super(itemView);
 
             checkedTextView = (CheckedTextView) itemView.findViewById(R.id.checked_text_view);
+            checkedTextView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            checkedTextView.toggle();
+            Topping currentTopping = (Topping) checkedTextView.getTag();
+            if (checkedTextView.isChecked()) {
+                selectedToppingList.add(currentTopping.getName());
+                toppingItemClickListener.onToppingItemClicked(currentTopping.getPrice());
+            } else {
+                selectedToppingList.remove(currentTopping.getName());
+                toppingItemClickListener.onToppingItemClicked(-currentTopping.getPrice());
+            }
         }
     }
 }
