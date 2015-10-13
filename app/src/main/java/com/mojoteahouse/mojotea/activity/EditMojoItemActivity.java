@@ -19,6 +19,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,6 +60,7 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
     private RecyclerView toppingsRecyclerView;
     private ToppingItemAdapter toppingItemAdapter;
     private TextView noToppingTextView;
+    private EditText noteEditText;
     private MojoMenu localMojoMenu;
     private int quantity;
     private double totalPrice;
@@ -159,6 +161,28 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
         toppingsRecyclerView.setAdapter(toppingItemAdapter);
         noToppingTextView = (TextView) findViewById(R.id.no_topping_text);
 
+        final ImageButton clearNoteButton = (ImageButton) findViewById(R.id.note_clear_button);
+        clearNoteButton.setOnClickListener(this);
+        noteEditText = (EditText) findViewById(R.id.note_edit_text);
+        noteEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                clearNoteButton.setVisibility(TextUtils.isEmpty(s)
+                        ? View.GONE
+                        : View.VISIBLE);
+            }
+        });
+
         loadMojoMenuInBackground(launchIntent.getIntExtra(EXTRA_MOJO_MENU_ID, 0));
         loadToppingListInBackground(launchIntent.getIntegerArrayListExtra(EXTRA_MOJO_MENU_AVAILABLE_TOPPINGS));
     }
@@ -174,6 +198,10 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
         switch (v.getId()) {
             case R.id.add_to_cart_button:
                 saveOrderItemAndFinish();
+                break;
+
+            case R.id.note_clear_button:
+                noteEditText.setText("");
                 break;
         }
     }
@@ -288,6 +316,7 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
             orderItem.setSelectedToppingPrice(toppingPrice);
             orderItem.setQuantity(quantity);
             orderItem.setSelectedToppingsList(selectedToppings);
+            orderItem.setNote(noteEditText.getText() == null ? "" : noteEditText.getText().toString());
             final String orderItemId = String.valueOf(System.currentTimeMillis());
             orderItem.setOrderItemId(orderItemId);
 
@@ -300,7 +329,11 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
                     } else {
                         String orderItemString = orderItemId + SPLIT_SYMBOL + orderItemDetail;
                         orderItemIdSet.add(orderItemString);
-                        sharedPreferences.edit().putStringSet(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_CONTENT_SET, orderItemIdSet).apply();
+                        double localTotalPrice = sharedPreferences.getFloat(MojoTeaApp.PREF_LOCAL_ORDER_TOTAL_PRICE, 0);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putStringSet(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_CONTENT_SET, orderItemIdSet);
+                        editor.putFloat(MojoTeaApp.PREF_LOCAL_ORDER_TOTAL_PRICE, (float) (localTotalPrice + orderItem.getTotalPrice()));
+                        editor.apply();
 
                         Intent data = new Intent();
                         data.putExtra(EXTRA_QUANTITY, quantity);

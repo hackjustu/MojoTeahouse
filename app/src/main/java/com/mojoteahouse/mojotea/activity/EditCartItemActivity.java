@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,6 +67,7 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
     private RecyclerView toppingsRecyclerView;
     private ToppingItemAdapter toppingItemAdapter;
     private TextView noToppingTextView;
+    private EditText noteEditText;
     private SharedPreferences sharedPreferences;
     private String orderItemId;
     private OrderItem localOrderItem;
@@ -93,8 +95,8 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
         quantity = launchIntent.getIntExtra(EXTRA_QUANTITY, 0);
         selectedToppings = launchIntent.getStringArrayListExtra(EXTRA_SELECTED_TOPPINGS);
 
-        orderItemImageView = (ParseImageView) findViewById(R.id.order_item_image);
-        orderItemNameTextView = (TextView) findViewById(R.id.order_item_name_text);
+        orderItemImageView = (ParseImageView) findViewById(R.id.mojo_item_image);
+        orderItemNameTextView = (TextView) findViewById(R.id.mojo_item_name_text);
         editDoneButton = (Button) findViewById(R.id.edit_done_button);
         editDoneButton.setOnClickListener(this);
 
@@ -177,6 +179,28 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
         toppingsRecyclerView.setAdapter(toppingItemAdapter);
         noToppingTextView = (TextView) findViewById(R.id.no_topping_text);
 
+        final ImageButton clearNoteButton = (ImageButton) findViewById(R.id.note_clear_button);
+        clearNoteButton.setOnClickListener(this);
+        noteEditText = (EditText) findViewById(R.id.note_edit_text);
+        noteEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                clearNoteButton.setVisibility(TextUtils.isEmpty(s)
+                        ? View.GONE
+                        : View.VISIBLE);
+            }
+        });
+
         loadOrderItemInBackground(orderItemId);
     }
 
@@ -210,6 +234,10 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
             case R.id.edit_done_button:
                 saveOrderItemAndFinish();
                 break;
+
+            case R.id.note_clear_button:
+                noteEditText.setText("");
+                break;
         }
     }
 
@@ -228,6 +256,8 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
                 MojoTeaApp.PREF_LOCAL_ORDER_ITEM_CONTENT_SET, new HashSet<String>());
         int totalOrderItemCount = sharedPreferences.getInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, 0);
         final int newOrderItemCount = totalOrderItemCount - localOrderItem.getQuantity();
+        double totalPrice = sharedPreferences.getFloat(MojoTeaApp.PREF_LOCAL_ORDER_TOTAL_PRICE, 0);
+        final float newTotalPrice = (float) (totalPrice - localOrderItem.getTotalPrice());
         for (final String orderItemString : orderItemIdSet) {
             if (orderItemId.equals(orderItemString.split(SPLIT_SYMBOL)[0])) {
                 localOrderItem.unpinInBackground(MojoTeaApp.ORDER_ITEM_GROUP, new DeleteCallback() {
@@ -240,6 +270,7 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putStringSet(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_CONTENT_SET, orderItemIdSet);
                             editor.putInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, newOrderItemCount);
+                            editor.putFloat(MojoTeaApp.PREF_LOCAL_ORDER_TOTAL_PRICE, newTotalPrice);
                             editor.apply();
                             setResult(RESULT_OK);
                             finish();
@@ -281,6 +312,7 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
                     orderItemName = orderItem.getName();
                     orderItemNameTextView.setText(orderItemName);
                     orderItemNameTextView.setVisibility(View.VISIBLE);
+                    noteEditText.setText(orderItem.getNote());
                     mojoItemPrice = localMojoMenu.getPrice();
                     toppingPrice = orderItem.getSelectedToppingPrice();
                     updatePriceAndText();
@@ -335,10 +367,13 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
         Collections.sort(selectedToppings);
         int totalCount = sharedPreferences.getInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, 0);
         final int newCount = totalCount - localOrderItem.getQuantity() + quantity;
+        double localTotalPrice = sharedPreferences.getFloat(MojoTeaApp.PREF_LOCAL_ORDER_TOTAL_PRICE, 0);
+        final float newTotalPrice = (float) (localTotalPrice - localOrderItem.getTotalPrice() + totalPrice);
         localOrderItem.setQuantity(quantity);
         localOrderItem.setSelectedToppingPrice(toppingPrice);
         localOrderItem.setSelectedToppingsList(selectedToppings);
         localOrderItem.setTotalPrice(totalPrice);
+        localOrderItem.setNote(noteEditText.getText() == null ? "" : noteEditText.getText().toString());
         localOrderItem.pinInBackground(MojoTeaApp.ORDER_ITEM_GROUP, new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -346,7 +381,10 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
                     Toast.makeText(EditCartItemActivity.this, R.string.edit_cart_item_error_message, Toast.LENGTH_LONG).show();
                     cancelAndFinish();
                 } else {
-                    sharedPreferences.edit().putInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, newCount).apply();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, newCount);
+                    editor.putFloat(MojoTeaApp.PREF_LOCAL_ORDER_TOTAL_PRICE, newTotalPrice);
+                    editor.apply();
                     setResult(RESULT_OK);
                     finish();
                 }

@@ -9,9 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -20,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.mojoteahouse.mojotea.MojoTeaApp;
 import com.mojoteahouse.mojotea.R;
@@ -54,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String UPDATED_AT = "updatedAt";
 
-    private CoordinatorLayout coordinatorContainer;
     private Toolbar toolbar;
     private DrawerLayout navigationDrawer;
     private ActionBarDrawerToggle navigationDrawerToggle;
@@ -65,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        coordinatorContainer = (CoordinatorLayout) findViewById(R.id.coordinator_container);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.nav_menu_title);
@@ -100,6 +97,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         navigationDrawerToggle.syncState();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (getIntent().hasExtra(EXTRA_SHOW_ORDER_PAGE)) {
+            updateFragment(TAG_ORDER_HISTORY, true);
+        }
     }
 
     @Override
@@ -197,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void showErrorMessage(int resId) {
-        Snackbar.make(coordinatorContainer, resId, Snackbar.LENGTH_LONG).show();
+        Toast.makeText(this, resId, Toast.LENGTH_LONG).show();
     }
 
     private void showLoadingDialog() {

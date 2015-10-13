@@ -24,8 +24,12 @@ public class MojoTeaApp extends Application {
     public static final String PREF_REMOTE_DATA_LOADED = "PREF_REMOTE_DATA_LOADED";
     public static final String PREF_MOJO_MENU_CATEGORY_SET = "PREF_MOJO_MENU_CATEGORY_SET";
     public static final String PREF_LAST_SYNC_TIMESTAMP = "PREF_LAST_SYNC_TIMESTAMP";
+    public static final String PREF_LOCAL_ORDER_TOTAL_PRICE = "PREF_LOCAL_ORDER_TOTAL_PRICE";
     public static final String PREF_LOCAL_ORDER_ITEM_COUNT = "PREF_LOCAL_ORDER_ITEM_COUNT";
     public static final String PREF_LOCAL_ORDER_ITEM_CONTENT_SET = "PREF_LOCAL_ORDER_ITEM_CONTENT_SET";
+    public static final String PREF_CUSTOMER_NAME = "PREF_CUSTOMER_NAME";
+    public static final String PREF_CUSTOMER_ADDRESS = "PREF_CUSTOMER_ADDRESS";
+    public static final String PREF_CUSTOMER_PHONE = "PREF_CUSTOMER_PHONE";
 
     @Override
     public void onCreate() {

@@ -42,9 +42,11 @@
     <string name="add_to_cart_button_text">Add to cart ($%.2f)</string>
     <string name="get_topping_error_message">Cannot get toppings for this item</string>
     <string name="add_to_cart_error_message">Cannot add to cart. Please try again.</string>
+    <string name="item_note_hint">Note</string>
+    <string name="edit_note_hint">Half sugar, 2 spoons etc</string>
 
     <!-- Cart Activity -->
-    <string name="cart_toolbar_title">Cart</string>
+    <string name="cart_toolbar_title">Cart ($%.2f)</string>
     <string name="back_button_text">&#60; Back</string>
     <string name="next_button_text">Next &#62;</string>
     <string name="place_order_button_text">Place Order</string>
@@ -74,11 +76,13 @@
     <string name="address_hint">Address</string>
     <string name="phone_hint">Phone</string>
     <string name="deliver_time_hint">Deliver By</string>
-    <string name="note_hint">Note</string>
+    <string name="order_note_hint">Note (Door gate # etc)</string>
     <string name="name_error_message">Please enter your name</string>
     <string name="address_error_message">Please enter your valid address</string>
     <string name="phone_error_message">Please enter a valid phone number</string>
     <string name="deliver_time_error_message">Deliver time cannot be in the past or fewer than 15 minutes from now!</string>
+    <string name="accept_payment_text">We accept cash or Venmo!</string>
+    <string name="venmo_account_text">Venmo account: @Mojo-Teahouse</string>
 
     <!-- Post Order Activity -->
     <string name="got_it_button_text">Got It!</string>
@@ -92,5 +96,8 @@
     <string name="no_order_text">No order available for review.</string>
     <string name="today_text">Today, </string>
     <string name="order_summary_additional_count_format"> &#38; %d more&#8230;</string>
+
+    <!-- View Order Activity -->
+    <string name="view_order_toolbar_title">Order ($%.2f)</string>
 
 </resources>

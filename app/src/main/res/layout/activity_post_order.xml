@@ -12,7 +12,7 @@
         <Button
             android:id="@+id/got_it_button"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="@dimen/button_height"
             android:layout_alignParentBottom="true"
             android:background="@drawable/button_state"
             android:text="@string/got_it_button_text"

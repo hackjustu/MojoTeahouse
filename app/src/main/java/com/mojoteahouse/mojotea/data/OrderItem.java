@@ -16,6 +16,7 @@ public class OrderItem extends ParseObject {
     private static final String QUANTITY = "quantity";
     private static final String SELECTED_TOPPINGS = "selectedToppings";
     private static final String SELECTED_TOPPING_PRICE = "selectedToppingPrice";
+    private static final String NOTE = "note";
 
     public static ParseQuery<OrderItem> getQuery() {
         return ParseQuery.getQuery(OrderItem.class);
@@ -79,5 +80,13 @@ public class OrderItem extends ParseObject {
 
     public void setSelectedToppingPrice(double price) {
         put(SELECTED_TOPPING_PRICE, price);
+    }
+
+    public String getNote() {
+        return getString(NOTE);
+    }
+
+    public void setNote(String note) {
+        put(NOTE, note);
     }
 }

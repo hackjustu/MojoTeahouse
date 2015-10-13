@@ -28,7 +28,6 @@ import com.mojoteahouse.mojotea.fragment.PlacingOrderDialogFragment;
 import com.mojoteahouse.mojotea.util.DataUtils;
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
@@ -53,6 +52,10 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
     private ViewSwitcher buttonViewSwitcher;
     private SharedPreferences sharedPreferences;
     private Date deliverTime;
+    private String customerName;
+    private String customerAddress;
+    private String customerPhone;
+    private String customerNote;
     private ConnectivityManager connectivityManager;
 
     @Override
@@ -63,7 +66,6 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(R.string.cart_toolbar_title);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -83,6 +85,8 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        getSupportActionBar().setTitle(String.format(getString(R.string.cart_toolbar_title),
+                sharedPreferences.getFloat(MojoTeaApp.PREF_LOCAL_ORDER_TOTAL_PRICE, 0)));
         if (sharedPreferences.getInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, 0) == 0) {
             supportFinishAfterTransition();
         }
@@ -121,6 +125,11 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
                     } else if (customerDetailFragment.checkAllFields()) {
                         updateFragment(TAG_CONFIRM_ORDER_DIALOG, false);
                         deliverTime = customerDetailFragment.getDeliverTime();
+                        customerName = customerDetailFragment.getCustomerName();
+                        customerAddress = customerDetailFragment.getCustomerAddress();
+                        customerPhone = customerDetailFragment.getCustomerPhone();
+                        customerNote = customerDetailFragment.getCustomerNote();
+                        saveCustomerDetails();
                     }
                 } else {
                     Toast.makeText(this, R.string.no_network_place_order_error_message, Toast.LENGTH_LONG).show();
@@ -205,12 +214,25 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void saveCustomerDetails() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(MojoTeaApp.PREF_CUSTOMER_NAME, customerName);
+        editor.putString(MojoTeaApp.PREF_CUSTOMER_ADDRESS, customerAddress);
+        editor.putString(MojoTeaApp.PREF_CUSTOMER_PHONE, customerPhone);
+        editor.apply();
+    }
+
     private void saveOrder(List<OrderItem> orderItemList) {
         final Order order = new Order();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, MMM dd yyyy, h:mm a", Locale.US);
         order.setOrderTime(simpleDateFormat.format(new Date()));
         order.setDeliverBy(simpleDateFormat.format(deliverTime));
+        order.setCustomerName(customerName);
+        order.setCustomerAddress(customerAddress);
+        order.setCustomerPhone(customerPhone);
+        order.setCustomerNote(customerNote);
         order.setTotalQuantity(sharedPreferences.getInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, 0));
+        order.setOrderItemList(orderItemList);
         double totalPrice = 0;
         List<String> completeOrderList = new ArrayList<>();
         List<String> toppingList;
@@ -256,10 +278,9 @@ public class CartActivity extends AppCompatActivity implements View.OnClickListe
                         if (e != null) {
                             Toast.makeText(CartActivity.this, R.string.place_order_error_message, Toast.LENGTH_LONG).show();
                         } else {
-                            ParseObject.unpinAllInBackground(MojoTeaApp.ORDER_ITEM_GROUP);
-
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, 0);
+                            editor.putFloat(MojoTeaApp.PREF_LOCAL_ORDER_TOTAL_PRICE, 0);
                             editor.putStringSet(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_CONTENT_SET, new HashSet<String>());
                             editor.apply();
 

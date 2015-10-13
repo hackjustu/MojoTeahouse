@@ -10,9 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary"
+        android:elevation="@dimen/elevation"
         app:tabIndicatorColor="@color/white"
         app:tabMode="fixed"
-        android:elevation="@dimen/elevation"
         app:tabSelectedTextColor="@color/white"
         app:tabTextColor="@color/text_hint" />
 
@@ -23,7 +23,7 @@
         <Button
             android:id="@+id/go_to_cart_button"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="@dimen/button_height"
             android:layout_alignParentBottom="true"
             android:background="@drawable/button_state"
             android:text="@string/go_to_cart_button_text"
@@ -34,7 +34,8 @@
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/go_to_cart_button" />
+            android:layout_above="@id/go_to_cart_button"
+            android:background="@color/background_normal" />
 
     </RelativeLayout>
 

@@ -11,6 +11,8 @@ import com.mojoteahouse.mojotea.R;
 import com.mojoteahouse.mojotea.data.Topping;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ToppingItemAdapter extends RecyclerView.Adapter<ToppingItemAdapter.ToppingViewHolder> {
@@ -20,6 +22,7 @@ public class ToppingItemAdapter extends RecyclerView.Adapter<ToppingItemAdapter.
     private ToppingItemClickListener toppingItemClickListener;
     private List<String> selectedToppingList;
     private String toppingFormat;
+    private boolean disableCheckBox;
 
     public ToppingItemAdapter(Context context, List<Topping> toppingList, ToppingItemClickListener toppingItemClickListener) {
         layoutInflater = LayoutInflater.from(context);
@@ -27,6 +30,16 @@ public class ToppingItemAdapter extends RecyclerView.Adapter<ToppingItemAdapter.
         this.toppingItemClickListener = toppingItemClickListener;
         selectedToppingList = new ArrayList<>();
         toppingFormat = context.getString(R.string.topping_format);
+        disableCheckBox = false;
+    }
+
+    public ToppingItemAdapter(Context context, List<Topping> toppingList, boolean disableCheckBox) {
+        layoutInflater = LayoutInflater.from(context);
+        this.toppingList = toppingList;
+        this.toppingItemClickListener = null;
+        selectedToppingList = new ArrayList<>();
+        toppingFormat = context.getString(R.string.topping_format);
+        this.disableCheckBox = disableCheckBox;
     }
 
     @Override
@@ -56,6 +69,7 @@ public class ToppingItemAdapter extends RecyclerView.Adapter<ToppingItemAdapter.
 
     public void updateToppingList(List<Topping> toppingList) {
         if (toppingList != null) {
+            Collections.sort(toppingList, new ToppingComparator());
             selectedToppingList.clear();
             this.toppingList.clear();
             this.toppingList.addAll(toppingList);
@@ -65,6 +79,7 @@ public class ToppingItemAdapter extends RecyclerView.Adapter<ToppingItemAdapter.
 
     public void updateWithSelectedToppingList(List<Topping> toppingList, List<String> selectedToppingList) {
         if (toppingList != null) {
+            Collections.sort(toppingList, new ToppingComparator());
             if (selectedToppingList != null) {
                 this.selectedToppingList.clear();
                 this.selectedToppingList.addAll(selectedToppingList);
@@ -89,7 +104,11 @@ public class ToppingItemAdapter extends RecyclerView.Adapter<ToppingItemAdapter.
             super(itemView);
 
             checkedTextView = (CheckedTextView) itemView.findViewById(R.id.checked_text_view);
-            checkedTextView.setOnClickListener(this);
+            if (disableCheckBox) {
+                checkedTextView.setEnabled(false);
+            } else {
+                checkedTextView.setOnClickListener(this);
+            }
         }
 
         @Override
@@ -103,6 +122,17 @@ public class ToppingItemAdapter extends RecyclerView.Adapter<ToppingItemAdapter.
                 selectedToppingList.remove(currentTopping.getName());
                 toppingItemClickListener.onToppingItemClicked(-currentTopping.getPrice());
             }
+        }
+    }
+
+    private class ToppingComparator implements Comparator<Topping> {
+
+        @Override
+        public int compare(Topping first, Topping second) {
+            if (first.getName() == null) {
+                return 1;
+            }
+            return first.getName().compareTo(second.getName());
         }
     }
 }

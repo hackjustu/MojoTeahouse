@@ -2,7 +2,9 @@ package com.mojoteahouse.mojotea.fragment;
 
 import android.app.Fragment;
 import android.app.TimePickerDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.mojoteahouse.mojotea.MojoTeaApp;
 import com.mojoteahouse.mojotea.R;
 
 import java.text.SimpleDateFormat;
@@ -161,6 +164,34 @@ public class CartCustomerDetailFragment extends Fragment implements View.OnClick
         return selectedDeliverTime.getTime();
     }
 
+    public String getCustomerName() {
+        if (TextUtils.isEmpty(nameEditText.getText())) {
+            return "";
+        }
+        return nameEditText.getText().toString();
+    }
+
+    public String getCustomerAddress() {
+        if (TextUtils.isEmpty(addressEditText.getText())) {
+            return "";
+        }
+        return addressEditText.getText().toString();
+    }
+
+    public String getCustomerPhone() {
+        if (TextUtils.isEmpty(phoneEditText.getText())) {
+            return "";
+        }
+        return phoneEditText.getText().toString();
+    }
+
+    public String getCustomerNote() {
+        if (TextUtils.isEmpty(noteEditText.getText())) {
+            return "";
+        }
+        return noteEditText.getText().toString();
+    }
+
     private boolean isPhoneNumberValid(String number) {
         Pattern pattern = Pattern.compile(PHONE_NUMBER_REGEX);
         Matcher matcher = pattern.matcher(number);
@@ -288,5 +319,10 @@ public class CartCustomerDetailFragment extends Fragment implements View.OnClick
                         : View.VISIBLE);
             }
         });
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        nameEditText.setText(sharedPreferences.getString(MojoTeaApp.PREF_CUSTOMER_NAME, ""));
+        addressEditText.setText(sharedPreferences.getString(MojoTeaApp.PREF_CUSTOMER_ADDRESS, ""));
+        phoneEditText.setText(sharedPreferences.getString(MojoTeaApp.PREF_CUSTOMER_PHONE, ""));
     }
 }

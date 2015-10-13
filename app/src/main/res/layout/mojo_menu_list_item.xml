@@ -45,7 +45,6 @@
                     android:id="@+id/name_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
                     android:layout_marginEnd="42dp"
                     android:layout_marginRight="42dp"
                     android:ellipsize="end"
@@ -54,18 +53,10 @@
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/price_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
-                    android:layout_marginEnd="48dp"
-                    android:layout_marginRight="48dp" />
-
-                <TextView
                     android:id="@+id/topping_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="12dp"
                     android:ellipsize="end"
                     android:maxLines="2" />
 
@@ -79,6 +70,18 @@
                 android:layout_margin="10dp"
                 android:src="@drawable/ic_new"
                 android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/price_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:singleLine="true"
+                android:textColor="@color/accent"
+                android:textSize="16sp" />
 
             <ImageView
                 android:id="@+id/sold_out_image"

@@ -10,12 +10,17 @@ import java.util.List;
 public class Order extends ParseObject {
 
     public static final String ANONYMOUS_USER_ID = "anonymousUserId";
-    private static final String ORDER_TIME = "orderTime";
+    public static final String ORDER_TIME = "orderTime";
     private static final String DELIVER_BY = "deliverBy";
     private static final String COMPLETE_ORDER_LIST = "completeOrderList";
     private static final String TOTAL_QUANTITY = "totalQuantity";
     private static final String TOTAL_PRICE = "totalPrice";
+    private static final String CUSTOMER_NAME = "customerName";
+    private static final String CUSTOMER_ADDRESS = "customerAddress";
+    private static final String CUSTOMER_PHONE = "customerPhone";
+    private static final String CUSTOMER_NOTE = "customerNote";
     private static final String STATUS = "status";
+    private static final String ORDER_ITEM_LIST = "orderItemList";
 
     public static ParseQuery<Order> getQuery() {
         return ParseQuery.getQuery(Order.class);
@@ -73,7 +78,47 @@ public class Order extends ParseObject {
         put(TOTAL_PRICE, totalPrice);
     }
 
+    public String getCustomerName() {
+        return getString(CUSTOMER_NAME);
+    }
+
+    public void setCustomerName(String customerName) {
+        put(CUSTOMER_NAME, customerName);
+    }
+
+    public String getCustomerAddress() {
+        return getString(CUSTOMER_ADDRESS);
+    }
+
+    public void setCustomerAddress(String customerAddress) {
+        put(CUSTOMER_ADDRESS, customerAddress);
+    }
+
+    public String getCustomerPhone() {
+        return getString(CUSTOMER_PHONE);
+    }
+
+    public void setCustomerPhone(String customerPhone) {
+        put(CUSTOMER_PHONE, customerPhone);
+    }
+
+    public String getCustomerNote() {
+        return getString(CUSTOMER_NOTE);
+    }
+
+    public void setCustomerNote(String customerNote) {
+        put(CUSTOMER_NOTE, customerNote);
+    }
+
     public String getStatus() {
         return getString(STATUS);
+    }
+
+    public List<OrderItem> getOrderItemList() {
+        return getList(ORDER_ITEM_LIST);
+    }
+
+    public void setOrderItemList(List<OrderItem> orderItemList) {
+        put(ORDER_ITEM_LIST, orderItemList);
     }
 }
