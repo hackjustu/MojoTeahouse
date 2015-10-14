@@ -67,13 +67,16 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
 
     private TextInputLayout nameTextLayout;
     private TextInputLayout addressTextLayout;
+    private TextInputLayout zipTextLayout;
     private TextInputLayout phoneTextLayout;
     private EditText nameEditText;
     private EditText addressEditText;
+    private EditText zipEditText;
     private EditText phoneEditText;
     private EditText noteEditText;
     private ImageButton clearNameButton;
     private ImageButton clearAddressButton;
+    private ImageButton clearZipButton;
     private ImageButton clearPhoneButton;
     private ImageButton clearNoteButton;
     private Button dateAndTimeButton;
@@ -88,6 +91,7 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
     private Date deliverTime;
     private String customerName;
     private String customerAddress;
+    private String customerZip;
     private String customerPhone;
     private String customerNote;
 
@@ -106,13 +110,16 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
 
         nameTextLayout = (TextInputLayout) findViewById(R.id.name_edit_text_layout);
         addressTextLayout = (TextInputLayout) findViewById(R.id.address_edit_text_layout);
+        zipTextLayout = (TextInputLayout) findViewById(R.id.zip_edit_text_layout);
         phoneTextLayout = (TextInputLayout) findViewById(R.id.phone_edit_text_layout);
         nameEditText = (EditText) findViewById(R.id.name_edit_text);
         addressEditText = (EditText) findViewById(R.id.address_edit_text);
+        zipEditText = (EditText) findViewById(R.id.zip_edit_text);
         phoneEditText = (EditText) findViewById(R.id.phone_edit_text);
         noteEditText = (EditText) findViewById(R.id.note_edit_text);
         clearNameButton = (ImageButton) findViewById(R.id.name_clear_button);
         clearAddressButton = (ImageButton) findViewById(R.id.address_clear_button);
+        clearZipButton = (ImageButton) findViewById(R.id.zip_clear_button);
         clearPhoneButton = (ImageButton) findViewById(R.id.phone_clear_button);
         clearNoteButton = (ImageButton) findViewById(R.id.note_clear_button);
         dateAndTimeButton = (Button) findViewById(R.id.date_and_time_button);
@@ -121,17 +128,18 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
 
         nameTextLayout.setErrorEnabled(true);
         addressTextLayout.setErrorEnabled(true);
+        zipTextLayout.setErrorEnabled(true);
         phoneTextLayout.setErrorEnabled(true);
 
         setupEditTexts();
 
         clearNameButton.setOnClickListener(this);
         clearAddressButton.setOnClickListener(this);
+        clearZipButton.setOnClickListener(this);
         clearPhoneButton.setOnClickListener(this);
         clearNoteButton.setOnClickListener(this);
         dateAndTimeButton.setOnClickListener(this);
         placeOrderButton.setOnClickListener(this);
-        placeOrderButton.setEnabled(true);
 
         selectedDeliverTime = Calendar.getInstance();
         selectedDeliverTime.add(Calendar.MINUTE, MIN_DELIVER_TIME_MINS);
@@ -160,6 +168,11 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
             case R.id.address_clear_button:
                 addressEditText.setText("");
                 addressTextLayout.setError(null);
+                break;
+
+            case R.id.zip_clear_button:
+                zipEditText.setText("");
+                zipTextLayout.setError(null);
                 break;
 
             case R.id.phone_clear_button:
@@ -251,7 +264,7 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
-                    phoneEditText.requestFocus();
+                    zipEditText.requestFocus();
                     return true;
                 }
                 return false;
@@ -272,6 +285,36 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
             public void afterTextChanged(Editable s) {
                 addressTextLayout.setError(null);
                 clearAddressButton.setVisibility(TextUtils.isEmpty(s)
+                        ? View.GONE
+                        : View.VISIBLE);
+            }
+        });
+
+        zipEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+                    phoneEditText.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+        zipEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                zipTextLayout.setError(null);
+                clearZipButton.setVisibility(TextUtils.isEmpty(s)
                         ? View.GONE
                         : View.VISIBLE);
             }
@@ -318,6 +361,7 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
 
         nameEditText.setText(sharedPreferences.getString(MojoTeaApp.PREF_CUSTOMER_NAME, ""));
         addressEditText.setText(sharedPreferences.getString(MojoTeaApp.PREF_CUSTOMER_ADDRESS, ""));
+        zipEditText.setText(sharedPreferences.getString(MojoTeaApp.PREF_CUSTOMER_ZIP, ""));
         phoneEditText.setText(sharedPreferences.getString(MojoTeaApp.PREF_CUSTOMER_PHONE, ""));
     }
 
@@ -331,11 +375,18 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
             nameTextLayout.setError(getString(R.string.name_error_message));
             return false;
         }
-        if (TextUtils.isEmpty(addressEditText.getText()) || addressEditText.getText().length() < 10) {
+        Editable address = addressEditText.getText();
+        if (TextUtils.isEmpty(address) || address.length() < 10) {
             addressTextLayout.setError(getString(R.string.address_error_message));
             return false;
         }
-        if (TextUtils.isEmpty(phoneEditText.getText()) || !isPhoneNumberValid(phoneEditText.getText().toString())) {
+        Editable zip = zipEditText.getText();
+        if (TextUtils.isEmpty(zip) || zip.length() != 5) {
+            zipTextLayout.setError(getString(R.string.zip_error_message));
+            return false;
+        }
+        Editable phone = phoneEditText.getText();
+        if (TextUtils.isEmpty(phone) || !isPhoneNumberValid(phone.toString())) {
             phoneTextLayout.setError(getString(R.string.phone_error_message));
             return false;
         }
@@ -450,7 +501,7 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
             order.setOrderTime(simpleDateFormat.format(new Date()));
             order.setDeliverBy(simpleDateFormat.format(deliverTime));
             order.setCustomerName(customerName);
-            order.setCustomerAddress(customerAddress);
+            order.setCustomerAddress(String.format(getString(R.string.customer_address_format), customerAddress, customerZip));
             order.setCustomerPhone(customerPhone);
             order.setCustomerNote(customerNote);
             order.setTotalQuantity(sharedPreferences.getInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, 0));
@@ -503,11 +554,13 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
         deliverTime = selectedDeliverTime.getTime();
         customerName = (nameEditText.getText() == null ? "" : nameEditText.getText().toString());
         customerAddress = (addressEditText.getText() == null ? "" : addressEditText.getText().toString());
+        customerZip = (zipEditText.getText() == null ? "" : zipEditText.getText().toString());
         customerPhone = (phoneEditText.getText() == null ? "" : phoneEditText.getText().toString());
         customerNote = (noteEditText.getText() == null ? "" : noteEditText.getText().toString());
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(MojoTeaApp.PREF_CUSTOMER_NAME, customerName);
         editor.putString(MojoTeaApp.PREF_CUSTOMER_ADDRESS, customerAddress);
+        editor.putString(MojoTeaApp.PREF_CUSTOMER_ZIP, customerZip);
         editor.putString(MojoTeaApp.PREF_CUSTOMER_PHONE, customerPhone);
         editor.apply();
     }

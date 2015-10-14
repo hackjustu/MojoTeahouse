@@ -66,11 +66,13 @@
     <string name="place_order_toolbar_title">Order Detail</string>
     <string name="name_hint">Name</string>
     <string name="address_hint">Address</string>
+    <string name="zip_hint">Zip</string>
     <string name="phone_hint">Phone</string>
     <string name="deliver_time_hint">Deliver By</string>
     <string name="order_note_hint">Note (Door gate # etc)</string>
     <string name="name_error_message">Please enter your name</string>
     <string name="address_error_message">Please enter your valid address</string>
+    <string name="zip_error_message">Sorry we cannot deliver to your zip. (Invalid or too far)</string>
     <string name="phone_error_message">Please enter a valid phone number</string>
     <string name="deliver_too_soon_error_message">Please allow at least 30 minutes for us to prepare and deliver.</string>
     <string name="deliver_business_time_error_message">Please select deliver time within our business time: 12 pm to 9 pm.</string>
@@ -83,6 +85,7 @@
     <string name="place_order_dialog_title">Place Order Confirmation</string>
     <string name="place_order_dialog_message">Do you want to place this order?</string>
     <string name="placing_order_data_message">Placing order, please wait&#8230;</string>
+    <string name="customer_address_format">%1$s   %2$s</string>
 
     <!-- Post Order Activity -->
     <string name="got_it_button_text">Got It!</string>

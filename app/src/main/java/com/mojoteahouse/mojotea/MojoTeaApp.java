@@ -30,6 +30,7 @@ public class MojoTeaApp extends Application {
     public static final String PREF_LOCAL_ORDER_ITEM_CONTENT_SET = "PREF_LOCAL_ORDER_ITEM_CONTENT_SET";
     public static final String PREF_CUSTOMER_NAME = "PREF_CUSTOMER_NAME";
     public static final String PREF_CUSTOMER_ADDRESS = "PREF_CUSTOMER_ADDRESS";
+    public static final String PREF_CUSTOMER_ZIP = "PREF_CUSTOMER_ZIP";
     public static final String PREF_CUSTOMER_PHONE = "PREF_CUSTOMER_PHONE";
 
     @Override
