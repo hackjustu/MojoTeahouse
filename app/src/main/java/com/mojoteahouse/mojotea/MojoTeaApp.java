@@ -21,6 +21,7 @@ public class MojoTeaApp extends Application {
     public static final String TOPPING_GROUP = "TOPPING_GROUP";
     public static final String MOJO_IMAGE_GROUP = "MOJO_IMAGE_GROUP";
 
+    public static final String PREF_CLOSED_NOW = "PREF_CLOSED_NOW";
     public static final String PREF_REMOTE_DATA_LOADED = "PREF_REMOTE_DATA_LOADED";
     public static final String PREF_MOJO_MENU_CATEGORY_SET = "PREF_MOJO_MENU_CATEGORY_SET";
     public static final String PREF_LAST_SYNC_TIMESTAMP = "PREF_LAST_SYNC_TIMESTAMP";

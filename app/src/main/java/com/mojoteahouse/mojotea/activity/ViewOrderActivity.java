@@ -2,6 +2,7 @@ package com.mojoteahouse.mojotea.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,13 +25,14 @@ public class ViewOrderActivity extends AppCompatActivity implements CartSummaryI
     public static final String EXTRA_ORDER_TIME = "EXTRA_ORDER_TIME";
 
     private CartSummaryItemAdapter itemAdapter;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_order);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -45,7 +47,7 @@ public class ViewOrderActivity extends AppCompatActivity implements CartSummaryI
 
     @Override
     public boolean onSupportNavigateUp() {
-        supportFinishAfterTransition();
+        finish();
         return true;
     }
 
@@ -54,7 +56,9 @@ public class ViewOrderActivity extends AppCompatActivity implements CartSummaryI
     public void onCartSummaryItemClicked(OrderItem orderItem) {
         Intent intent = new Intent(this, ViewOrderItemActivity.class);
         intent.putExtra(ViewOrderItemActivity.EXTRA_ORDER_ITEM_ID, orderItem.getOrderItemId());
-        startActivity(intent);
+        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this, toolbar, getString(R.string.toolbar_transition));
+        startActivity(intent, optionsCompat.toBundle());
     }
 
     private void loadOrderInBackground(String orderTime) {

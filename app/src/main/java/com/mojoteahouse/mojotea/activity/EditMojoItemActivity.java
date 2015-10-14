@@ -6,8 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -18,8 +16,10 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +27,6 @@ import android.widget.ViewSwitcher;
 
 import com.mojoteahouse.mojotea.MojoTeaApp;
 import com.mojoteahouse.mojotea.R;
-import com.mojoteahouse.mojotea.adapter.ToppingItemAdapter;
 import com.mojoteahouse.mojotea.data.MojoImage;
 import com.mojoteahouse.mojotea.data.MojoMenu;
 import com.mojoteahouse.mojotea.data.OrderItem;
@@ -41,11 +40,12 @@ import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class EditMojoItemActivity extends AppCompatActivity implements View.OnClickListener, ToppingItemAdapter.ToppingItemClickListener {
+public class EditMojoItemActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String EXTRA_MOJO_MENU_ID = "EXTRA_MOJO_MENU_ID";
     public static final String EXTRA_MOJO_MENU_AVAILABLE_TOPPINGS = "EXTRA_MOJO_MENU_AVAILABLE_TOPPINGS";
@@ -57,11 +57,10 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
     private ParseImageView mojoItemImageView;
     private TextView mojoItemNameTextView;
     private Button addToCartButton;
-    private RecyclerView toppingsRecyclerView;
-    private ToppingItemAdapter toppingItemAdapter;
     private TextView noToppingTextView;
     private EditText noteEditText;
     private MojoMenu localMojoMenu;
+    private List<String> selectedToppings;
     private int quantity;
     private double totalPrice;
     private String mojoItemName;
@@ -81,10 +80,11 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
         Intent launchIntent = getIntent();
         quantity = 1;
         toppingPrice = 0;
+        selectedToppings = new ArrayList<>();
 
         mojoItemImageView = (ParseImageView) findViewById(R.id.mojo_item_image);
         mojoItemNameTextView = (TextView) findViewById(R.id.mojo_item_name_text);
-        addToCartButton = (Button) findViewById(R.id.add_to_cart_button);
+        addToCartButton = (Button) findViewById(R.id.edit_action_button);
         addToCartButton.setOnClickListener(this);
 
         final ViewSwitcher quantityViewSwitcher = (ViewSwitcher) findViewById(R.id.quantity_view_switcher);
@@ -154,11 +154,6 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
             }
         });
 
-        toppingsRecyclerView = (RecyclerView) findViewById(R.id.toppings_recycler_view);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        toppingsRecyclerView.setLayoutManager(linearLayoutManager);
-        toppingItemAdapter = new ToppingItemAdapter(EditMojoItemActivity.this, new ArrayList<Topping>(), this);
-        toppingsRecyclerView.setAdapter(toppingItemAdapter);
         noToppingTextView = (TextView) findViewById(R.id.no_topping_text);
 
         final ImageButton clearNoteButton = (ImageButton) findViewById(R.id.note_clear_button);
@@ -196,7 +191,7 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.add_to_cart_button:
+            case R.id.edit_action_button:
                 saveOrderItemAndFinish();
                 break;
 
@@ -204,15 +199,6 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
                 noteEditText.setText("");
                 break;
         }
-    }
-
-    @Override
-    public void onToppingItemClicked(double toppingPrice) {
-        this.toppingPrice += toppingPrice;
-        if (this.toppingPrice < 0) {
-            this.toppingPrice = 0;
-        }
-        updatePriceAndText();
     }
 
     private void loadMojoMenuInBackground(int mojoMenuId) {
@@ -271,9 +257,8 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
                         }
                     }
                     if (!toppingList.isEmpty()) {
-                        toppingItemAdapter.updateToppingList(toppingList);
                         noToppingTextView.setVisibility(View.GONE);
-                        toppingsRecyclerView.setVisibility(View.VISIBLE);
+                        addToppings(toppingList);
                     } else {
                         noToppingTextView.setVisibility(View.VISIBLE);
                     }
@@ -284,22 +269,58 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
         });
     }
 
+    private void addToppings(List<Topping> toppingList) {
+        Collections.sort(toppingList, new ToppingComparator());
+        LinearLayout toppingContainer = (LinearLayout) findViewById(R.id.topping_container);
+        toppingContainer.removeAllViews();
+        for (final Topping topping : toppingList) {
+            final CheckedTextView checkedTextView = (CheckedTextView) getLayoutInflater().inflate(
+                    R.layout.topping_list_item, toppingContainer, false);
+            checkedTextView.setText(String.format(getString(R.string.topping_format),
+                    topping.getName(), topping.getPrice()));
+            checkedTextView.setTag(topping);
+            checkedTextView.setChecked(selectedToppings.contains(topping.getName()));
+            checkedTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    checkedTextView.toggle();
+                    Topping relatedTopping = (Topping) checkedTextView.getTag();
+                    if (checkedTextView.isChecked()) {
+                        selectedToppings.add(relatedTopping.getName());
+                        updateSelectedToppingPrice(relatedTopping.getPrice());
+                    } else {
+                        selectedToppings.remove(relatedTopping.getName());
+                        updateSelectedToppingPrice(-relatedTopping.getPrice());
+                    }
+                }
+            });
+            toppingContainer.addView(checkedTextView);
+        }
+    }
+
+    private void updateSelectedToppingPrice(double toppingPrice) {
+        this.toppingPrice += toppingPrice;
+        if (this.toppingPrice < 0) {
+            this.toppingPrice = 0;
+        }
+        updatePriceAndText();
+    }
+
     private void updatePriceAndText() {
         totalPrice = quantity * (mojoItemPrice + toppingPrice);
         addToCartButton.setText(String.format(getString(R.string.add_to_cart_button_text), totalPrice));
     }
 
     private void saveOrderItemAndFinish() {
-        List<String> selectedToppings = toppingItemAdapter.getSelectedToppingList();
         Collections.sort(selectedToppings);
         final String orderItemDetail = getOrderItemContentString(selectedToppings);
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final Set<String> orderItemIdSet = sharedPreferences.getStringSet(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_CONTENT_SET, new HashSet<String>());
+        final Set<String> orderItemContentSet = sharedPreferences.getStringSet(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_CONTENT_SET, new HashSet<String>());
         String savedSameOrderItemId = null;
 
         // Each OrderItemString will be saved as "orderItemId + % + mojoMenuName + all toppings
         // We will use the part after % to check if there is already same item saved.
-        for (String str : orderItemIdSet) {
+        for (String str : orderItemContentSet) {
             int splitSymbolPosition = str.indexOf(SPLIT_SYMBOL);
             if (orderItemDetail.equals(str.substring(splitSymbolPosition + 1))) {
                 savedSameOrderItemId = str.substring(0, splitSymbolPosition);
@@ -328,10 +349,10 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
                         cancelAndFinish();
                     } else {
                         String orderItemString = orderItemId + SPLIT_SYMBOL + orderItemDetail;
-                        orderItemIdSet.add(orderItemString);
+                        orderItemContentSet.add(orderItemString);
                         double localTotalPrice = sharedPreferences.getFloat(MojoTeaApp.PREF_LOCAL_ORDER_TOTAL_PRICE, 0);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putStringSet(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_CONTENT_SET, orderItemIdSet);
+                        editor.putStringSet(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_CONTENT_SET, orderItemContentSet);
                         editor.putFloat(MojoTeaApp.PREF_LOCAL_ORDER_TOTAL_PRICE, (float) (localTotalPrice + orderItem.getTotalPrice()));
                         editor.apply();
 
@@ -386,5 +407,17 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
     private void cancelAndFinish() {
         setResult(RESULT_CANCELED);
         finish();
+    }
+
+
+    private class ToppingComparator implements Comparator<Topping> {
+
+        @Override
+        public int compare(Topping first, Topping second) {
+            if (first.getName() == null) {
+                return 1;
+            }
+            return first.getName().compareTo(second.getName());
+        }
     }
 }

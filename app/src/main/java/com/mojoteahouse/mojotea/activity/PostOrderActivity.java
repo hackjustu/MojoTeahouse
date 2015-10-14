@@ -45,9 +45,6 @@ public class PostOrderActivity extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id.got_it_button:
-                finishAndShowOrderPage();
-                break;
-
             case R.id.close_button:
                 finishAndShowOrderPage();
                 break;
@@ -57,6 +54,7 @@ public class PostOrderActivity extends AppCompatActivity implements View.OnClick
     private void finishAndShowOrderPage() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(MainActivity.EXTRA_SHOW_ORDER_PAGE, true);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }

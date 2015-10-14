@@ -9,9 +9,12 @@ import android.widget.TextView;
 
 import com.mojoteahouse.mojotea.R;
 import com.mojoteahouse.mojotea.activity.CartActivity;
+import com.mojoteahouse.mojotea.activity.PlaceOrderActivity;
 import com.mojoteahouse.mojotea.data.Order;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -24,14 +27,16 @@ public class OrderHistoryItemAdapter extends RecyclerView.Adapter<OrderHistoryIt
     private String orderPriceFormat;
     private String todayString;
     private SimpleDateFormat simpleDateFormat;
+    private OrderHistoryClickListener orderHistoryClickListener;
 
-    public OrderHistoryItemAdapter(Context context, List<Order> orderList) {
+    public OrderHistoryItemAdapter(Context context, List<Order> orderList, OrderHistoryClickListener listener) {
         layoutInflater = LayoutInflater.from(context);
         this.orderList = orderList;
         orderSummaryFormat = context.getString(R.string.order_summary_additional_count_format);
         orderPriceFormat = context.getString(R.string.order_price_format);
         todayString = context.getString(R.string.today_text);
         simpleDateFormat = new SimpleDateFormat("MMM dd yyyy", Locale.US);
+        orderHistoryClickListener = listener;
     }
 
     @Override
@@ -57,7 +62,7 @@ public class OrderHistoryItemAdapter extends RecyclerView.Adapter<OrderHistoryIt
         StringBuilder stringBuilder = new StringBuilder();
         String orderItemName;
         for (int i = 0; i < completeOrderList.size(); i++) {
-            orderItemName = completeOrderList.get(i).split(CartActivity.NAME_SPLIT_SYMBOL)[0];
+            orderItemName = completeOrderList.get(i).split(PlaceOrderActivity.NAME_SPLIT_SYMBOL)[0];
             if (i == 0) {
                 stringBuilder.append(orderItemName);
             } else if (i == 1) {
@@ -80,6 +85,7 @@ public class OrderHistoryItemAdapter extends RecyclerView.Adapter<OrderHistoryIt
 
     public void updateOrderList(List<Order> orderList) {
         if (orderList != null) {
+            Collections.sort(orderList, new OrderComparator());
             this.orderList.clear();
             this.orderList.addAll(orderList);
             notifyDataSetChanged();
@@ -87,7 +93,12 @@ public class OrderHistoryItemAdapter extends RecyclerView.Adapter<OrderHistoryIt
     }
 
 
-    protected class OrderViewHolder extends RecyclerView.ViewHolder {
+    public interface OrderHistoryClickListener {
+
+        void onOrderHistoryClicked(Order order);
+    }
+
+    protected class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView orderTimeText;
         private TextView orderSummaryText;
@@ -99,6 +110,22 @@ public class OrderHistoryItemAdapter extends RecyclerView.Adapter<OrderHistoryIt
             orderTimeText = (TextView) itemView.findViewById(R.id.order_time_text);
             orderSummaryText = (TextView) itemView.findViewById(R.id.order_summary_text);
             orderPriceText = (TextView) itemView.findViewById(R.id.order_price_text);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Order order = orderList.get(getLayoutPosition());
+            orderHistoryClickListener.onOrderHistoryClicked(order);
+        }
+    }
+
+    private class OrderComparator implements Comparator<Order> {
+
+        @Override
+        public int compare(Order first, Order second) {
+            return -first.getCreatedAt().compareTo(second.getCreatedAt());
         }
     }
 }

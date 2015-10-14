@@ -1,5 +1,6 @@
 package com.mojoteahouse.mojotea.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mojoteahouse.mojotea.R;
+import com.mojoteahouse.mojotea.activity.ViewOrderActivity;
 import com.mojoteahouse.mojotea.adapter.OrderHistoryItemAdapter;
 import com.mojoteahouse.mojotea.data.Order;
 import com.parse.FindCallback;
@@ -20,12 +22,11 @@ import com.parse.ParseQuery;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderHistoryFragment extends BaseFragment {
+public class OrderHistoryFragment extends BaseFragment implements OrderHistoryItemAdapter.OrderHistoryClickListener {
 
     private RecyclerView recyclerView;
     private TextView noOrderText;
     private OrderHistoryItemAdapter adapter;
-    private List<Order> localOrderList;
 
     public static OrderHistoryFragment newInstance() {
         OrderHistoryFragment fragment = new OrderHistoryFragment();
@@ -45,7 +46,7 @@ public class OrderHistoryFragment extends BaseFragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.order_history_recycler_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new OrderHistoryItemAdapter(getActivity(), new ArrayList<Order>());
+        adapter = new OrderHistoryItemAdapter(getActivity(), new ArrayList<Order>(), this);
         recyclerView.setAdapter(adapter);
         noOrderText = (TextView) view.findViewById(R.id.no_order_text);
 
@@ -56,6 +57,13 @@ public class OrderHistoryFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadOrdersInBackground();
+    }
+
+    @Override
+    public void onOrderHistoryClicked(Order order) {
+        Intent intent = new Intent(getActivity(), ViewOrderActivity.class);
+        intent.putExtra(ViewOrderActivity.EXTRA_ORDER_TIME, order.getOrderTime());
+        startActivity(intent);
     }
 
     private void loadOrdersInBackground() {
@@ -74,7 +82,6 @@ public class OrderHistoryFragment extends BaseFragment {
                 } else {
                     noOrderText.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
-                    localOrderList = orderList;
                     adapter.updateOrderList(orderList);
                 }
             }

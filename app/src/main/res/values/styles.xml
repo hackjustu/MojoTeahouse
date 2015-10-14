@@ -50,7 +50,7 @@
 
     <style name="TextAppearance.AppCompat.Button.Normal">
         <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@drawable/text_color_state</item>
         <item name="android:fontFamily">@string/roboto_medium</item>
     </style>
 

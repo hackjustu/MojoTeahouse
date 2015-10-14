@@ -2,15 +2,14 @@ package com.mojoteahouse.mojotea.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.CheckedTextView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mojoteahouse.mojotea.R;
-import com.mojoteahouse.mojotea.adapter.ToppingItemAdapter;
 import com.mojoteahouse.mojotea.data.MojoImage;
 import com.mojoteahouse.mojotea.data.MojoMenu;
 import com.mojoteahouse.mojotea.data.OrderItem;
@@ -22,9 +21,11 @@ import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
-public class ViewOrderItemActivity extends AppCompatActivity implements ToppingItemAdapter.ToppingItemClickListener {
+public class ViewOrderItemActivity extends AppCompatActivity {
 
     public static final String EXTRA_ORDER_ITEM_ID = "EXTRA_ORDER_ITEM_ID";
 
@@ -32,8 +33,6 @@ public class ViewOrderItemActivity extends AppCompatActivity implements ToppingI
     private TextView orderItemNameTextView;
     private TextView quantityText;
     private TextView noteText;
-    private RecyclerView toppingsRecyclerView;
-    private ToppingItemAdapter toppingItemAdapter;
     private TextView noToppingTextView;
     private List<String> selectedToppings;
 
@@ -51,12 +50,6 @@ public class ViewOrderItemActivity extends AppCompatActivity implements ToppingI
         orderItemNameTextView = (TextView) findViewById(R.id.mojo_item_name_text);
         quantityText = (TextView) findViewById(R.id.quantity_text);
         noteText = (TextView) findViewById(R.id.note_text);
-
-        toppingsRecyclerView = (RecyclerView) findViewById(R.id.toppings_recycler_view);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        toppingsRecyclerView.setLayoutManager(linearLayoutManager);
-        toppingItemAdapter = new ToppingItemAdapter(this, new ArrayList<Topping>(), true);
-        toppingsRecyclerView.setAdapter(toppingItemAdapter);
         noToppingTextView = (TextView) findViewById(R.id.no_topping_text);
 
         loadOrderItemInBackground(getIntent().getStringExtra(EXTRA_ORDER_ITEM_ID));
@@ -66,11 +59,6 @@ public class ViewOrderItemActivity extends AppCompatActivity implements ToppingI
     public boolean onSupportNavigateUp() {
         supportFinishAfterTransition();
         return true;
-    }
-
-    @Override
-    public void onToppingItemClicked(double toppingPrice) {
-
     }
 
     private void loadOrderItemInBackground(String orderItemId) {
@@ -101,7 +89,7 @@ public class ViewOrderItemActivity extends AppCompatActivity implements ToppingI
                     });
                     orderItemNameTextView.setText(orderItem.getName());
                     orderItemNameTextView.setVisibility(View.VISIBLE);
-                    quantityText.setText(orderItem.getQuantity());
+                    quantityText.setText(String.valueOf(orderItem.getQuantity()));
                     noteText.setText(orderItem.getNote());
                 }
             }
@@ -129,10 +117,8 @@ public class ViewOrderItemActivity extends AppCompatActivity implements ToppingI
                         }
                     }
                     if (!toppingList.isEmpty()) {
-                        toppingItemAdapter.updateWithSelectedToppingList(toppingList, selectedToppings);
+                        addToppings(toppingList);
                         noToppingTextView.setVisibility(View.GONE);
-                        toppingsRecyclerView.setVisibility(View.VISIBLE);
-                        toppingItemAdapter.notifyDataSetChanged();
                     } else {
                         noToppingTextView.setVisibility(View.VISIBLE);
                     }
@@ -141,5 +127,33 @@ public class ViewOrderItemActivity extends AppCompatActivity implements ToppingI
                 }
             }
         });
+    }
+
+    private void addToppings(List<Topping> toppingList) {
+        Collections.sort(toppingList, new ToppingComparator());
+        LinearLayout toppingContainer = (LinearLayout) findViewById(R.id.topping_container);
+        toppingContainer.removeAllViews();
+        for (final Topping topping : toppingList) {
+            final CheckedTextView checkedTextView = (CheckedTextView) getLayoutInflater().inflate(
+                    R.layout.topping_list_item, toppingContainer, false);
+            checkedTextView.setText(String.format(getString(R.string.topping_format),
+                    topping.getName(), topping.getPrice()));
+            checkedTextView.setTag(topping);
+            checkedTextView.setChecked(selectedToppings.contains(topping.getName()));
+            checkedTextView.setEnabled(false);
+            toppingContainer.addView(checkedTextView);
+        }
+    }
+
+
+    private class ToppingComparator implements Comparator<Topping> {
+
+        @Override
+        public int compare(Topping first, Topping second) {
+            if (first.getName() == null) {
+                return 1;
+            }
+            return first.getName().compareTo(second.getName());
+        }
     }
 }

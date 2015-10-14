@@ -26,6 +26,7 @@ import com.mojoteahouse.mojotea.data.MojoImage;
 import com.mojoteahouse.mojotea.data.MojoMenu;
 import com.mojoteahouse.mojotea.data.Order;
 import com.mojoteahouse.mojotea.data.Topping;
+import com.mojoteahouse.mojotea.fragment.ClosedNowDialogFragment;
 import com.mojoteahouse.mojotea.fragment.LoadingDialogFragment;
 import com.mojoteahouse.mojotea.fragment.MojoMenuFragment;
 import com.mojoteahouse.mojotea.fragment.OrderHistoryFragment;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String TAG_ORDER_HISTORY = "TAG_ORDER_HISTORY";
     private static final String TAG_ABOUT = "TAG_ABOUT";
     private static final String TAG_LOADING = "TAG_LOADING";
+    private static final String TAG_CLOSED_NOW = "TAG_CLOSED_NOW";
 
     private static final String UPDATED_AT = "updatedAt";
 
@@ -79,6 +81,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         boolean isNetworkConnected = (activeNetworkInfo != null) && (activeNetworkInfo.isConnected());
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isClosedNow = sharedPreferences.getBoolean(MojoTeaApp.PREF_CLOSED_NOW, false);
+        if (isClosedNow) {
+            showClosedNowDialog();
+        }
 
         if (!isNetworkConnected) {
             showErrorMessage(R.string.no_network_relaunch_error_message);
@@ -100,9 +106,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        if (getIntent().hasExtra(EXTRA_SHOW_ORDER_PAGE)) {
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent.hasExtra(EXTRA_SHOW_ORDER_PAGE)) {
             updateFragment(TAG_ORDER_HISTORY, true);
         }
     }
@@ -217,6 +223,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 = (LoadingDialogFragment) getFragmentManager().findFragmentByTag(TAG_LOADING);
         if (loadingFragment != null) {
             loadingFragment.dismiss();
+        }
+    }
+
+    private void showClosedNowDialog() {
+        Fragment fragment = getFragmentManager().findFragmentByTag(TAG_CLOSED_NOW);
+        if (fragment == null) {
+            ClosedNowDialogFragment.newInstance().show(getFragmentManager(), TAG_CLOSED_NOW);
         }
     }
 

@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.mojoteahouse.mojotea.activity.PlaceOrderActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:transitionName="@string/toolbar_transition"
+            app:navigationIcon="@drawable/ic_back"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/place_order_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/button_state"
+            android:fontFamily="@string/roboto_medium"
+            android:padding="10dp"
+            android:enabled="false"
+            android:text="@string/place_order_button_text"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button.Normal" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/place_order_button"
+            android:background="@color/background_normal"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/name_edit_text_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:hintTextAppearance="@style/TextAppearance.AppCompat.Hint">
+
+                        <android.support.v7.widget.AppCompatEditText
+                            android:id="@+id/name_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:hint="@string/name_hint"
+                            android:imeActionLabel="@string/action_next"
+                            android:imeOptions="actionNext"
+                            android:paddingEnd="40dp"
+                            android:paddingLeft="0dp"
+                            android:paddingRight="40dp"
+                            android:paddingStart="0dp"
+                            android:singleLine="true" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/name_clear_button"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginBottom="10dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:src="@drawable/ic_edit_text_clear"
+                        android:visibility="gone" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/address_edit_text_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:hintTextAppearance="@style/TextAppearance.AppCompat.Hint">
+
+                        <android.support.v7.widget.AppCompatEditText
+                            android:id="@+id/address_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:hint="@string/address_hint"
+                            android:imeActionLabel="@string/action_next"
+                            android:imeOptions="actionNext"
+                            android:paddingEnd="40dp"
+                            android:paddingLeft="0dp"
+                            android:paddingRight="40dp"
+                            android:paddingStart="0dp"
+                            android:singleLine="true" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/address_clear_button"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginBottom="10dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:src="@drawable/ic_edit_text_clear"
+                        android:visibility="gone" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/phone_edit_text_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:hintTextAppearance="@style/TextAppearance.AppCompat.Hint">
+
+                        <android.support.v7.widget.AppCompatEditText
+                            android:id="@+id/phone_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:hint="@string/phone_hint"
+                            android:inputType="phone"
+                            android:paddingEnd="40dp"
+                            android:paddingLeft="0dp"
+                            android:paddingRight="40dp"
+                            android:paddingStart="0dp"
+                            android:singleLine="true" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/phone_clear_button"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginBottom="10dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:src="@drawable/ic_edit_text_clear"
+                        android:visibility="gone" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/deliver_time_hint"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Hint" />
+
+                <Button
+                    android:id="@+id/date_and_time_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:gravity="start|center_vertical"
+                    android:padding="4dp"
+                    android:textColor="@color/accent"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/date_and_time_error_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingStart="10dp"
+                    android:textColor="@color/red"
+                    android:visibility="gone" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/note_edit_text_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:hintTextAppearance="@style/TextAppearance.AppCompat.Hint">
+
+                        <android.support.v7.widget.AppCompatEditText
+                            android:id="@+id/note_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:hint="@string/order_note_hint"
+                            android:paddingEnd="40dp"
+                            android:paddingLeft="0dp"
+                            android:paddingRight="40dp"
+                            android:paddingStart="0dp"
+                            android:singleLine="true" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/note_clear_button"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:background="?attr/selectableItemBackground"
+                        android:src="@drawable/ic_edit_text_clear"
+                        android:visibility="gone" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/accept_payment_text"
+                    android:textColor="@color/text_normal"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/venmo_account_text"
+                    android:textColor="@color/text_normal"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </RelativeLayout>
+
+</LinearLayout>

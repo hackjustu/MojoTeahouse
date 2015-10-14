@@ -10,6 +10,7 @@ import java.util.List;
 public class OrderItem extends ParseObject {
 
     public static final String ORDER_ITEM_ID = "orderItemId";
+    public static final String ORDER_PLACED = "orderPlaced";
     private static final String ASSOCIATED_MOJO_MENU = "associatedMojoMenu";
     private static final String NAME = "name";
     private static final String TOTAL_PRICE = "totalPrice";
@@ -23,7 +24,7 @@ public class OrderItem extends ParseObject {
     }
 
     public OrderItem() {
-
+        put(ORDER_PLACED, false);
     }
 
     public String getOrderItemId() {
@@ -80,6 +81,14 @@ public class OrderItem extends ParseObject {
 
     public void setSelectedToppingPrice(double price) {
         put(SELECTED_TOPPING_PRICE, price);
+    }
+
+    public boolean isOrderPlaced() {
+        return getBoolean(ORDER_PLACED);
+    }
+
+    public void setOrderPlaced(boolean orderPlaced) {
+        put(ORDER_PLACED, orderPlaced);
     }
 
     public String getNote() {

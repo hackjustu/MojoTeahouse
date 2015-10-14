@@ -24,75 +24,27 @@
     </android.support.design.widget.AppBarLayout>
 
     <RelativeLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ViewSwitcher
-            android:id="@+id/button_view_switcher"
+        <Button
+            android:id="@+id/check_out_button"
             android:layout_width="match_parent"
             android:layout_height="@dimen/button_height"
             android:layout_alignParentBottom="true"
-            android:animateLayoutChanges="true"
-            android:background="@color/button_layout_background">
+            android:background="@drawable/button_state"
+            android:fontFamily="@string/roboto_medium"
+            android:padding="10dp"
+            android:text="@string/next_button_text"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button.Normal" />
 
-            <Button
-                android:id="@+id/next_button"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:background="?attr/selectableItemBackground"
-                android:fontFamily="@string/roboto_medium"
-                android:padding="10dp"
-                android:text="@string/next_button_text"
-                android:textSize="18sp" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <Button
-                    android:id="@+id/back_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:fontFamily="@string/roboto_medium"
-                    android:padding="10dp"
-                    android:text="@string/back_button_text"
-                    android:textSize="18sp" />
-
-                <Button
-                    android:id="@+id/place_order_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:fontFamily="@string/roboto_medium"
-                    android:gravity="end|center_vertical"
-                    android:padding="10dp"
-                    android:text="@string/place_order_button_text"
-                    android:textColor="@color/accent"
-                    android:textSize="18sp" />
-
-            </RelativeLayout>
-
-        </ViewSwitcher>
-
-        <FrameLayout
-            android:id="@+id/cart_content_frame"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/summary_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/button_view_switcher"
-            android:layout_alignParentTop="true" />
+            android:layout_above="@id/check_out_button"
+            android:background="@color/background_normal"
+            android:scrollbars="vertical" />
 
     </RelativeLayout>
 

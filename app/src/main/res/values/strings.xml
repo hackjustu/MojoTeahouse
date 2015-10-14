@@ -28,7 +28,7 @@
     <!-- Mojo Menu Fragment -->
     <string name="mojo_menu_price_text">$%.2f</string>
     <string name="mojo_menu_topping_text">Topping: %s</string>
-    <string name="go_to_cart_button_text">Go to cart (%d)</string>
+    <string name="go_to_cart_button_text">Go To Cart (%d)</string>
     <string name="fetch_remote_data_error_message">Cannot fetch enough information from the server. Please reopen the page.</string>
     <string name="mojo_menu_sold_out_message">This item has been sold out! Please select others.</string>
 
@@ -47,14 +47,13 @@
 
     <!-- Cart Activity -->
     <string name="cart_toolbar_title">Cart ($%.2f)</string>
-    <string name="back_button_text">&#60; Back</string>
-    <string name="next_button_text">Next &#62;</string>
-    <string name="place_order_button_text">Place Order</string>
-    <string name="place_order_no_item_error_message">There is nothing in your cart!</string>
-    <string name="place_order_error_message">An error occurred when placing order. Please try again!</string>
-    <string name="place_order_dialog_title">Place Order Confirmation</string>
-    <string name="place_order_dialog_message">Do you want to place this order?</string>
-    <string name="placing_order_data_message">Placing order, please wait&#8230;</string>
+    <string name="next_button_text">Check Out</string>
+    <string name="quantity_format">Qty: %d</string>
+    <string name="price_format">$%.2f</string>
+    <string name="get_order_item_error_message">Cannot retrieve order summary details. Please reopen the page.</string>
+    <string name="action_mode_title_format">%d Selected</string>
+    <string name="delete_item_dialog_title">Delete Confirmation</string>
+    <string name="delete_selected_item_dialog_message">Do you really want to delete the selected item(s) ?</string>
 
     <!-- Edit Cart Item Activity -->
     <string name="edit_done_button_text">Done ($%.2f)</string>
@@ -63,15 +62,8 @@
     <string name="delete_cart_item_dialog_message">Do you really want to delete this item ?</string>
     <string name="delete_failed_error_message">Delete item failed. Please try again.</string>
 
-    <!-- Cart Summary Fragment -->
-    <string name="quantity_format">x %d</string>
-    <string name="price_format">$%.2f</string>
-    <string name="get_order_item_error_message">Cannot retrieve order summary details. Please reopen the page.</string>
-    <string name="action_mode_title_format">%d Selected</string>
-    <string name="delete_item_dialog_title">Delete Confirmation</string>
-    <string name="delete_selected_item_dialog_message">Do you really want to delete the selected item(s) ?</string>
-
-    <!-- Customer Detail Fragment -->
+    <!-- Place Order Activity -->
+    <string name="place_order_toolbar_title">Order Detail</string>
     <string name="name_hint">Name</string>
     <string name="address_hint">Address</string>
     <string name="phone_hint">Phone</string>
@@ -80,9 +72,17 @@
     <string name="name_error_message">Please enter your name</string>
     <string name="address_error_message">Please enter your valid address</string>
     <string name="phone_error_message">Please enter a valid phone number</string>
-    <string name="deliver_time_error_message">Deliver time cannot be in the past or fewer than 15 minutes from now!</string>
+    <string name="deliver_too_soon_error_message">Please allow at least 30 minutes for us to prepare and deliver.</string>
+    <string name="deliver_business_time_error_message">Please select deliver time within our business time: 12 pm to 9 pm.</string>
+    <string name="deliver_date_error_message">Please select deliver time within two days.</string>
     <string name="accept_payment_text">We accept cash or Venmo!</string>
     <string name="venmo_account_text">Venmo account: @Mojo-Teahouse</string>
+    <string name="place_order_button_text">Place Order</string>
+    <string name="place_order_no_item_error_message">There is nothing in your cart!</string>
+    <string name="place_order_error_message">An error occurred when placing order. Please try again!</string>
+    <string name="place_order_dialog_title">Place Order Confirmation</string>
+    <string name="place_order_dialog_message">Do you want to place this order?</string>
+    <string name="placing_order_data_message">Placing order, please wait&#8230;</string>
 
     <!-- Post Order Activity -->
     <string name="got_it_button_text">Got It!</string>
@@ -99,5 +99,9 @@
 
     <!-- View Order Activity -->
     <string name="view_order_toolbar_title">Order ($%.2f)</string>
+
+    <!-- Closed Now Dialog -->
+    <string name="prepare_for_food_text">&#8230;and are preparing for more food!</string>
+    <string name="browse_app_text">You can still browse our menu and add to cart. When we are open you will be able to place order as always.</string>
 
 </resources>

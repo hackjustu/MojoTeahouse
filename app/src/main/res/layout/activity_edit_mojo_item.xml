@@ -9,21 +9,6 @@
 
     <include layout="@layout/edit_item_toolbar" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <include layout="@layout/edit_item_layout" />
-
-        <Button
-            android:id="@+id/add_to_cart_button"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/button_height"
-            android:layout_gravity="bottom"
-            android:background="@drawable/button_state"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button.Normal"
-            android:visibility="gone" />
-
-    </FrameLayout>
+    <include layout="@layout/edit_item_layout" />
 
 </LinearLayout>
