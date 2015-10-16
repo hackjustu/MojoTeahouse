@@ -94,6 +94,7 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
     private String customerZip;
     private String customerPhone;
     private String customerNote;
+    private boolean isClosedNow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +125,7 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
         clearNoteButton = (ImageButton) findViewById(R.id.note_clear_button);
         dateAndTimeButton = (Button) findViewById(R.id.date_and_time_button);
         dateAndTimeErrorText = (TextView) findViewById(R.id.date_and_time_error_text);
-        placeOrderButton = (Button) findViewById(R.id.place_order_button);
+        placeOrderButton = (Button) findViewById(R.id.bottom_action_button);
 
         nameTextLayout.setErrorEnabled(true);
         addressTextLayout.setErrorEnabled(true);
@@ -132,6 +133,7 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
         phoneTextLayout.setErrorEnabled(true);
 
         setupEditTexts();
+        noteEditText.clearFocus();
 
         clearNameButton.setOnClickListener(this);
         clearAddressButton.setOnClickListener(this);
@@ -146,15 +148,23 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
         selectedDeliverTime.set(Calendar.SECOND, 59);
         simpleDateFormat = new SimpleDateFormat("EEE, MMM dd yyyy   h:mm a", Locale.US);
         updateDateAndTimeText();
+
+        isClosedNow = sharedPreferences.getBoolean(MojoTeaApp.PREF_CLOSED_NOW, false);
+        if (isClosedNow) {
+            showClosedNowDialog();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        boolean isClosedNow = sharedPreferences.getBoolean(MojoTeaApp.PREF_CLOSED_NOW, false);
-        if (isClosedNow) {
-            showClosedNowDialog();
-        }
+        placeOrderButton.setEnabled(!isClosedNow);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        supportFinishAfterTransition();
+        return true;
     }
 
     @Override
@@ -188,7 +198,7 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
                 showDatePickerDialog();
                 break;
 
-            case R.id.place_order_button:
+            case R.id.bottom_action_button:
                 NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
                 boolean isNetworkConnected = (activeNetworkInfo != null) && (activeNetworkInfo.isConnected());
                 if (sharedPreferences.getInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, 0) == 0) {
@@ -472,7 +482,9 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
             placeOrderButton.setEnabled(false);
         } else {
             dateAndTimeErrorText.setVisibility(View.GONE);
-            placeOrderButton.setEnabled(true);
+            if (!isClosedNow) {
+                placeOrderButton.setEnabled(true);
+            }
         }
     }
 

@@ -49,7 +49,6 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
 
     public static final String EXTRA_MOJO_MENU_ID = "EXTRA_MOJO_MENU_ID";
     public static final String EXTRA_MOJO_MENU_AVAILABLE_TOPPINGS = "EXTRA_MOJO_MENU_AVAILABLE_TOPPINGS";
-    public static final String EXTRA_QUANTITY = "EXTRA_QUANTITY";
 
     private static final String SPLIT_SYMBOL = "%";
     private static final int DISPLAY_QUANTITY_EDIT_TEXT = 1;
@@ -338,6 +337,7 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
             orderItem.setQuantity(quantity);
             orderItem.setSelectedToppingsList(selectedToppings);
             orderItem.setNote(noteEditText.getText() == null ? "" : noteEditText.getText().toString());
+            orderItem.setOrderPlaced(false);
             final String orderItemId = String.valueOf(System.currentTimeMillis());
             orderItem.setOrderItemId(orderItemId);
 
@@ -351,14 +351,14 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
                         String orderItemString = orderItemId + SPLIT_SYMBOL + orderItemDetail;
                         orderItemContentSet.add(orderItemString);
                         double localTotalPrice = sharedPreferences.getFloat(MojoTeaApp.PREF_LOCAL_ORDER_TOTAL_PRICE, 0);
+                        int savedQuantity = sharedPreferences.getInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, 0);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putStringSet(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_CONTENT_SET, orderItemContentSet);
-                        editor.putFloat(MojoTeaApp.PREF_LOCAL_ORDER_TOTAL_PRICE, (float) (localTotalPrice + orderItem.getTotalPrice()));
+                        editor.putInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, savedQuantity + quantity);
+                        editor.putFloat(MojoTeaApp.PREF_LOCAL_ORDER_TOTAL_PRICE, (float) (localTotalPrice + totalPrice));
                         editor.apply();
 
-                        Intent data = new Intent();
-                        data.putExtra(EXTRA_QUANTITY, quantity);
-                        setResult(RESULT_OK, data);
+                        setResult(RESULT_OK);
                         finish();
                     }
                 }
@@ -382,9 +382,14 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
                                     Toast.makeText(EditMojoItemActivity.this, R.string.add_to_cart_error_message, Toast.LENGTH_LONG).show();
                                     cancelAndFinish();
                                 } else {
-                                    Intent data = new Intent();
-                                    data.putExtra(EXTRA_QUANTITY, quantity);
-                                    setResult(RESULT_OK, data);
+                                    double localTotalPrice = sharedPreferences.getFloat(MojoTeaApp.PREF_LOCAL_ORDER_TOTAL_PRICE, 0);
+                                    int savedQuantity = sharedPreferences.getInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, 0);
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, savedQuantity + quantity);
+                                    editor.putFloat(MojoTeaApp.PREF_LOCAL_ORDER_TOTAL_PRICE, (float) (localTotalPrice + totalPrice));
+                                    editor.apply();
+
+                                    setResult(RESULT_OK);
                                     finish();
                                 }
                             }

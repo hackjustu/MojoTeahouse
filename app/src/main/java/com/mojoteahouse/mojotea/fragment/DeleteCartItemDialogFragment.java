@@ -11,11 +11,22 @@ import com.mojoteahouse.mojotea.R;
 
 public class DeleteCartItemDialogFragment extends DialogFragment {
 
+    private static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
+
     private DeleteCartItemListener deleteCartItemListener;
 
     public static DeleteCartItemDialogFragment newInstance() {
         DeleteCartItemDialogFragment fragment = new DeleteCartItemDialogFragment();
         fragment.setRetainInstance(true);
+        return fragment;
+    }
+
+    public static DeleteCartItemDialogFragment newInstance(String message) {
+        DeleteCartItemDialogFragment fragment = new DeleteCartItemDialogFragment();
+        fragment.setRetainInstance(true);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_MESSAGE, message);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -37,8 +48,13 @@ public class DeleteCartItemDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            builder.setMessage(bundle.getString(EXTRA_MESSAGE));
+        } else {
+            builder.setMessage(R.string.delete_cart_item_dialog_message);
+        }
         builder.setTitle(R.string.delete_item_dialog_title)
-                .setMessage(R.string.delete_cart_item_dialog_message)
                 .setCancelable(false)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override

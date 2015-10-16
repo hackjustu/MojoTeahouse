@@ -3,5 +3,7 @@
     <targets>
         <target android:excludeId="@android:id/statusBarBackground" />
         <target android:excludeId="@android:id/navigationBarBackground" />
+        <target android:excludeId="@id/toolbar" />
+        <target android:excludeId="@id/bottom_action_button" />
     </targets>
 </fade>

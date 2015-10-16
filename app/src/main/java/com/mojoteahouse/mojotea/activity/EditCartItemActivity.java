@@ -215,8 +215,8 @@ public class EditCartItemActivity extends AppCompatActivity implements View.OnCl
                 DeleteCartItemDialogFragment fragment = (DeleteCartItemDialogFragment) getFragmentManager().findFragmentByTag(TAG_DELETE_DIALOG);
                 if (fragment == null) {
                     fragment = DeleteCartItemDialogFragment.newInstance();
-                    fragment.show(getFragmentManager(), TAG_DELETE_DIALOG);
                 }
+                fragment.show(getFragmentManager(), TAG_DELETE_DIALOG);
                 break;
         }
         return true;

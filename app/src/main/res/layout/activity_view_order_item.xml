@@ -27,6 +27,8 @@
             android:id="@+id/quantity_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="12dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body" />
 
@@ -37,31 +39,26 @@
             android:text="@string/toppings_hint"
             android:textAppearance="@style/TextAppearance.AppCompat.Hint" />
 
-        <FrameLayout
+        <TextView
+            android:id="@+id/no_topping_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true">
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/no_topping_text"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body"
+            android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/no_topping_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/no_topping_text"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body"
-                android:visibility="gone" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/toppings_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:layout_marginTop="8dp"
-                android:animateLayoutChanges="true"
-                android:clickable="false"
-                android:scrollbars="none"
-                android:visibility="gone" />
-
-        </FrameLayout>
+        <LinearLayout
+            android:id="@+id/topping_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -74,6 +71,8 @@
             android:id="@+id/note_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="12dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body" />
 

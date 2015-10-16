@@ -24,7 +24,7 @@ public class OrderItem extends ParseObject {
     }
 
     public OrderItem() {
-        put(ORDER_PLACED, false);
+
     }
 
     public String getOrderItemId() {

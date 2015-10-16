@@ -36,9 +36,9 @@
                 android:id="@+id/quantity_view_switcher"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:layout_marginTop="10dp">
+                android:focusableInTouchMode="true">
 
                 <android.support.v7.widget.AppCompatSpinner
                     android:id="@+id/quantity_spinner"
@@ -69,6 +69,8 @@
                 android:id="@+id/no_topping_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/no_topping_text"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body"
@@ -100,7 +102,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
-                        android:hint="@string/order_note_hint"
+                        android:hint="@string/edit_note_hint"
                         android:paddingEnd="40dp"
                         android:paddingLeft="0dp"
                         android:paddingRight="40dp"

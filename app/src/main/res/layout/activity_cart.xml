@@ -1,34 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.mojoteahouse.mojotea.activity.CartActivity">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:transitionName="@string/toolbar_transition"
-            app:navigationIcon="@drawable/ic_back"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </android.support.design.widget.AppBarLayout>
+    <include layout="@layout/toolbar_layout" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <Button
-            android:id="@+id/check_out_button"
+            android:id="@+id/bottom_action_button"
             android:layout_width="match_parent"
             android:layout_height="@dimen/button_height"
             android:layout_alignParentBottom="true"
@@ -42,7 +27,7 @@
             android:id="@+id/summary_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/check_out_button"
+            android:layout_above="@id/bottom_action_button"
             android:background="@color/background_normal"
             android:scrollbars="vertical" />
 

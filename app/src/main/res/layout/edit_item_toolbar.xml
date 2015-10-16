@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/toolbar_large_height"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="@dimen/toolbar_large_height">
 
     <com.parse.ParseImageView
         android:id="@+id/mojo_item_image"
@@ -17,11 +16,10 @@
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-            app:navigationIcon="@drawable/ic_back"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_alignParentTop="true"
-            android:background="@drawable/text_gradient_background_reverse" />
+            android:background="@android:color/transparent" />
 
         <TextView
             android:id="@+id/mojo_item_name_text"

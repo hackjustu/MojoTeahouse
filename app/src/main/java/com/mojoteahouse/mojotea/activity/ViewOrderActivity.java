@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.mojoteahouse.mojotea.R;
@@ -20,7 +23,8 @@ import com.parse.ParseQuery;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewOrderActivity extends AppCompatActivity implements CartSummaryItemAdapter.CartSummaryItemClickListener {
+public class ViewOrderActivity extends AppCompatActivity implements CartSummaryItemAdapter.CartSummaryItemClickListener,
+        CartSummaryItemAdapter.CartSummaryItemLongClickListener {
 
     public static final String EXTRA_ORDER_TIME = "EXTRA_ORDER_TIME";
 
@@ -34,12 +38,13 @@ public class ViewOrderActivity extends AppCompatActivity implements CartSummaryI
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.view_order_toolbar_title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.order_item_recycler_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        itemAdapter = new CartSummaryItemAdapter(this, new ArrayList<OrderItem>(), this);
+        itemAdapter = new CartSummaryItemAdapter(this, new ArrayList<OrderItem>(), this, this);
         recyclerView.setAdapter(itemAdapter);
 
         loadOrderInBackground(getIntent().getStringExtra(EXTRA_ORDER_TIME));
@@ -51,14 +56,19 @@ public class ViewOrderActivity extends AppCompatActivity implements CartSummaryI
         return true;
     }
 
-
     @Override
-    public void onCartSummaryItemClicked(OrderItem orderItem) {
+    public void onCartSummaryItemClicked(int position) {
+        OrderItem orderItem = itemAdapter.getOrderItemAtPosition(position);
         Intent intent = new Intent(this, ViewOrderItemActivity.class);
         intent.putExtra(ViewOrderItemActivity.EXTRA_ORDER_ITEM_ID, orderItem.getOrderItemId());
         ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
                 this, toolbar, getString(R.string.toolbar_transition));
         startActivity(intent, optionsCompat.toBundle());
+    }
+
+    @Override
+    public void onCartSummaryItemLongClicked(int position) {
+        // Do nothing
     }
 
     private void loadOrderInBackground(String orderTime) {

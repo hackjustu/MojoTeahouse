@@ -69,7 +69,8 @@ public class OrderHistoryItemAdapter extends RecyclerView.Adapter<OrderHistoryIt
                 stringBuilder.append(", ")
                         .append(orderItemName);
             } else {
-                stringBuilder.append(String.format(orderSummaryFormat, completeOrderList.size() - 2));
+                stringBuilder.append(" ")
+                        .append(String.format(orderSummaryFormat, completeOrderList.size() - 2));
                 break;
             }
         }

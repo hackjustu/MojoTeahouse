@@ -81,20 +81,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         boolean isNetworkConnected = (activeNetworkInfo != null) && (activeNetworkInfo.isConnected());
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean isClosedNow = sharedPreferences.getBoolean(MojoTeaApp.PREF_CLOSED_NOW, false);
-        if (isClosedNow) {
-            showClosedNowDialog();
-        }
 
-        if (!isNetworkConnected) {
-            showErrorMessage(R.string.no_network_relaunch_error_message);
-        } else {
-            showLoadingDialog();
-            if (!sharedPreferences.contains(MojoTeaApp.PREF_REMOTE_DATA_LOADED)) {
-                sharedPreferences.edit().putBoolean(MojoTeaApp.PREF_REMOTE_DATA_LOADED, true).apply();
-                fetchRemoteDataToLocal();
+        if (savedInstanceState == null) {
+            boolean isClosedNow = sharedPreferences.getBoolean(MojoTeaApp.PREF_CLOSED_NOW, false);
+            if (isClosedNow) {
+                showClosedNowDialog();
+            }
+            if (!isNetworkConnected) {
+                showErrorMessage(R.string.no_network_relaunch_error_message);
             } else {
-                syncLocalDataWithRemote();
+                showLoadingDialog();
+                if (!sharedPreferences.contains(MojoTeaApp.PREF_REMOTE_DATA_LOADED)) {
+                    sharedPreferences.edit().putBoolean(MojoTeaApp.PREF_REMOTE_DATA_LOADED, true).apply();
+                    fetchRemoteDataToLocal();
+                } else {
+                    syncLocalDataWithRemote();
+                }
             }
         }
     }
@@ -212,10 +214,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void showLoadingDialog() {
-        Fragment fragment = getFragmentManager().findFragmentByTag(TAG_LOADING);
+        LoadingDialogFragment fragment
+                = (LoadingDialogFragment) getFragmentManager().findFragmentByTag(TAG_LOADING);
         if (fragment == null) {
-            LoadingDialogFragment.newInstance().show(getFragmentManager(), TAG_LOADING);
+            fragment = LoadingDialogFragment.newInstance();
         }
+        fragment.show(getFragmentManager(), TAG_LOADING);
     }
 
     private void dismissLoadingDialog() {

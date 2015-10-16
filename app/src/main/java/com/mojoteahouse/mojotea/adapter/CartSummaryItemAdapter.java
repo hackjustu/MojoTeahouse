@@ -2,6 +2,7 @@ package com.mojoteahouse.mojotea.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,15 +28,26 @@ public class CartSummaryItemAdapter extends RecyclerView.Adapter<CartSummaryItem
     private LayoutInflater layoutInflater;
     private List<OrderItem> orderItemList;
     private CartSummaryItemClickListener itemClickListener;
+    private CartSummaryItemLongClickListener itemLongClickListener;
+    private SparseBooleanArray selectedItemPositions;
     private String quantityFormat;
     private String priceFormat;
+    private int backgroundNormal;
+    private int backgroundSelected;
 
-    public CartSummaryItemAdapter(Context context, List<OrderItem> orderItemList, CartSummaryItemClickListener listener) {
+    public CartSummaryItemAdapter(Context context,
+                                  List<OrderItem> orderItemList,
+                                  CartSummaryItemClickListener itemClickListener,
+                                  CartSummaryItemLongClickListener itemLongClickListener) {
         layoutInflater = LayoutInflater.from(context);
         this.orderItemList = orderItemList;
-        itemClickListener = listener;
+        this.itemClickListener = itemClickListener;
+        this.itemLongClickListener = itemLongClickListener;
+        selectedItemPositions = new SparseBooleanArray();
         quantityFormat = context.getString(R.string.quantity_format);
         priceFormat = context.getString(R.string.price_format);
+        backgroundNormal = context.getResources().getColor(R.color.background_light);
+        backgroundSelected = context.getResources().getColor(R.color.light_primary);
     }
 
     @Override
@@ -66,6 +78,12 @@ public class CartSummaryItemAdapter extends RecyclerView.Adapter<CartSummaryItem
         holder.quantityText.setText(String.format(quantityFormat, orderItem.getQuantity()));
         holder.toppingText.setText(DataUtils.getToppingListString(orderItem.getSelectedToppingsList()));
         holder.priceText.setText(String.format(priceFormat, orderItem.getTotalPrice()));
+
+        if (selectedItemPositions.get(position)) {
+            holder.summaryLayout.setBackgroundColor(backgroundSelected);
+        } else {
+            holder.summaryLayout.setBackgroundColor(backgroundNormal);
+        }
     }
 
     @Override
@@ -77,6 +95,7 @@ public class CartSummaryItemAdapter extends RecyclerView.Adapter<CartSummaryItem
 
     public void updateOrderItemList(List<OrderItem> orderItemList) {
         if (orderItemList != null) {
+            clearSelection();
             Collections.sort(orderItemList, new OrderItemComparator());
             this.orderItemList.clear();
             this.orderItemList.addAll(orderItemList);
@@ -84,13 +103,49 @@ public class CartSummaryItemAdapter extends RecyclerView.Adapter<CartSummaryItem
         }
     }
 
+    public OrderItem getOrderItemAtPosition(int position) {
+        return orderItemList.get(position);
+    }
+
+    public void clearSelection() {
+        selectedItemPositions.clear();
+        notifyDataSetChanged();
+    }
+
+    public void setSelectionAtPosition(int position, boolean selected) {
+        if (selected) {
+            selectedItemPositions.put(position, true);
+        } else {
+            selectedItemPositions.delete(position);
+        }
+
+        notifyDataSetChanged();
+    }
+
+    public boolean isSelectedAtPosition(int position) {
+        return selectedItemPositions.get(position, false);
+    }
+
+    public int getSelectedCount() {
+        return selectedItemPositions.size();
+    }
+
+    public SparseBooleanArray getSelectedItemPositions() {
+        return selectedItemPositions;
+    }
+
 
     public interface CartSummaryItemClickListener {
 
-        void onCartSummaryItemClicked(OrderItem orderItem);
+        void onCartSummaryItemClicked(int position);
     }
 
-    protected class CartSummaryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public interface CartSummaryItemLongClickListener {
+
+        void onCartSummaryItemLongClicked(int position);
+    }
+
+    protected class CartSummaryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         private LinearLayout summaryLayout;
         private ParseImageView imageView;
@@ -110,12 +165,18 @@ public class CartSummaryItemAdapter extends RecyclerView.Adapter<CartSummaryItem
             priceText = (TextView) itemView.findViewById(R.id.price_text);
 
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            OrderItem orderItem = orderItemList.get(getLayoutPosition());
-            itemClickListener.onCartSummaryItemClicked(orderItem);
+            itemClickListener.onCartSummaryItemClicked(getLayoutPosition());
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            itemLongClickListener.onCartSummaryItemLongClicked(getLayoutPosition());
+            return true;
         }
     }
 
@@ -127,12 +188,10 @@ public class CartSummaryItemAdapter extends RecyclerView.Adapter<CartSummaryItem
         }
     }
 
-    //    private LayoutInflater layoutInflater;
+//    private LayoutInflater layoutInflater;
 //    private List<OrderItem> orderItemList;
 //    private String quantityFormat;
 //    private String priceFormat;
-//    private int backgroundNormal;
-//    private int backgroundSelected;
 //    private SparseBooleanArray selectedItemPositions;
 //
 //    public CartSummaryItemAdapter(Context context, List<OrderItem> orderItemList) {
@@ -141,8 +200,6 @@ public class CartSummaryItemAdapter extends RecyclerView.Adapter<CartSummaryItem
 //        this.orderItemList = orderItemList;
 //        quantityFormat = context.getString(R.string.quantity_format);
 //        priceFormat = context.getString(R.string.price_format);
-//        backgroundNormal = context.getResources().getColor(R.color.white);
-//        backgroundSelected = context.getResources().getColor(R.color.light_primary);
 //        selectedItemPositions = new SparseBooleanArray();
 //    }
 //
@@ -153,7 +210,7 @@ public class CartSummaryItemAdapter extends RecyclerView.Adapter<CartSummaryItem
 //        if (convertView == null) {
 //            convertView = layoutInflater.inflate(R.layout.cart_summary_list_item, parent, false);
 //            holder = new CartSummaryViewHolder();
-//            holder.summaryLayout = (LinearLayout) convertView.findViewById(R.id.summary_layout);
+//            holder.summaryLayout = (RelativeLayout) convertView.findViewById(R.id.summary_layout);
 //            holder.imageView = (ParseImageView) convertView.findViewById(R.id.image_view);
 //            holder.nameText = (TextView) convertView.findViewById(R.id.name_text);
 //            holder.quantityText = (TextView) convertView.findViewById(R.id.quantity_text);
@@ -184,9 +241,9 @@ public class CartSummaryItemAdapter extends RecyclerView.Adapter<CartSummaryItem
 //        holder.toppingText.setText(DataUtils.getToppingListString(orderItem.getSelectedToppingsList()));
 //        holder.priceText.setText(String.format(priceFormat, orderItem.getTotalPrice()));
 //        if (selectedItemPositions.get(position)) {
-//            holder.summaryLayout.setBackgroundColor(backgroundSelected);
+//            holder.summaryLayout.setEnabled(true);
 //        } else {
-//            holder.summaryLayout.setBackgroundColor(backgroundNormal);
+//            holder.summaryLayout.setEnabled(false);
 //        }
 //
 //        return convertView;
@@ -201,8 +258,8 @@ public class CartSummaryItemAdapter extends RecyclerView.Adapter<CartSummaryItem
 //
 //    public void updateOrderItemList(List<OrderItem> orderItemList) {
 //        if (orderItemList != null) {
-//            Collections.sort(orderItemList, new OrderItemComparator());
 //            clearSelection();
+//            Collections.sort(orderItemList, new OrderItemComparator());
 //            this.orderItemList.clear();
 //            this.orderItemList.addAll(orderItemList);
 //            notifyDataSetChanged();
@@ -243,11 +300,19 @@ public class CartSummaryItemAdapter extends RecyclerView.Adapter<CartSummaryItem
 //
 //    private class CartSummaryViewHolder {
 //
-//        private LinearLayout summaryLayout;
+//        private RelativeLayout summaryLayout;
 //        private ParseImageView imageView;
 //        private TextView nameText;
 //        private TextView quantityText;
 //        private TextView toppingText;
 //        private TextView priceText;
+//    }
+//
+//    private class OrderItemComparator implements Comparator<OrderItem> {
+//
+//        @Override
+//        public int compare(OrderItem first, OrderItem second) {
+//            return first.getOrderItemId().compareTo(second.getOrderItemId());
+//        }
 //    }
 }

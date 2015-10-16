@@ -22,6 +22,7 @@ public class CopyrightActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.copyright);
         getSupportActionBar().setHomeButtonEnabled(true);
 
         TextView copyright = (TextView) findViewById(R.id.copyright_text);

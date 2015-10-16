@@ -44,7 +44,6 @@ public class MojoMenuFragment extends BaseFragment implements View.OnClickListen
     private List<String> mojoMenuCategories;
     private MojoMenuItemAdapter[] mojoMenuItemAdapters;
     private GoToCartClickListener goToCartClickListener;
-    private int totalCount;
 
     public static MojoMenuFragment newInstance() {
         MojoMenuFragment fragment = new MojoMenuFragment();
@@ -78,7 +77,7 @@ public class MojoMenuFragment extends BaseFragment implements View.OnClickListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mojo_menu, container, false);
 
-        goToCartButton = (Button) view.findViewById(R.id.go_to_cart_button);
+        goToCartButton = (Button) view.findViewById(R.id.bottom_action_button);
         goToCartButton.setOnClickListener(this);
 
         viewPager = (ViewPager) view.findViewById(R.id.view_pager);
@@ -88,7 +87,7 @@ public class MojoMenuFragment extends BaseFragment implements View.OnClickListen
         mojoMenuCategories = new ArrayList<>();
         mojoMenuCategories.addAll(mojoMenuCategorySet);
         Collections.sort(mojoMenuCategories);
-        setupViewPager();
+        setupViewPager(savedInstanceState);
 
         return view;
     }
@@ -102,7 +101,6 @@ public class MojoMenuFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onResume() {
         super.onResume();
-        totalCount = 0;
         updateButtonText(sharedPreferences.getInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, 0));
     }
 
@@ -123,7 +121,7 @@ public class MojoMenuFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.go_to_cart_button:
+            case R.id.bottom_action_button:
                 goToCartClickListener.onGoToCartButtonClicked();
                 break;
         }
@@ -132,12 +130,11 @@ public class MojoMenuFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_EDIT_ITEM && resultCode == Activity.RESULT_OK) {
-            int quantity = data.getIntExtra(EditMojoItemActivity.EXTRA_QUANTITY, 1);
-            updateButtonText(quantity);
+            updateButtonText(sharedPreferences.getInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, 0));
         }
     }
 
-    private void setupViewPager() {
+    private void setupViewPager(Bundle savedInstanceState) {
         int count = mojoMenuCategories.size();
         RecyclerView[] recyclerViews = new RecyclerView[count];
         mojoMenuItemAdapters = new MojoMenuItemAdapter[count];
@@ -153,39 +150,17 @@ public class MojoMenuFragment extends BaseFragment implements View.OnClickListen
         viewPager.setAdapter(tabsAdapter);
         // Temporary fix for tab text blink upon changing page
         tabLayout.setTabMode(count > 3 ? TabLayout.MODE_SCROLLABLE : TabLayout.MODE_FIXED);
-        tabLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                tabLayout.setupWithViewPager(viewPager);
-            }
-        });
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout) {
-            int mScrollState;
-            int mScrollPosition;
-            float mScrollOffset;
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                super.onPageScrollStateChanged(state);
-                mScrollState = state;
-            }
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset,
-                                       int positionOffsetPixels) {
-                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-                mScrollPosition = position;
-                mScrollOffset = positionOffset;
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                if (mScrollState != ViewPager.SCROLL_STATE_IDLE) {
-                    tabLayout.setScrollPosition(mScrollPosition, mScrollOffset, false);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        if (savedInstanceState == null) {
+            tabLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    tabLayout.setupWithViewPager(viewPager);
                 }
-            }
-        });
+            });
+        } else {
+            tabLayout.setupWithViewPager(viewPager);
+        }
     }
 
     private void loadDataInBackground() {
@@ -220,13 +195,8 @@ public class MojoMenuFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void updateButtonText(int quantity) {
-        totalCount += quantity;
-        goToCartButton.setText(String.format(getString(R.string.go_to_cart_button_text), totalCount));
-        goToCartButton.setVisibility(totalCount > 0 ? View.VISIBLE : View.GONE);
-
-        if (sharedPreferences.getInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, 0) != totalCount) {
-            sharedPreferences.edit().putInt(MojoTeaApp.PREF_LOCAL_ORDER_ITEM_COUNT, totalCount).apply();
-        }
+        goToCartButton.setText(String.format(getString(R.string.go_to_cart_button_text), quantity));
+        goToCartButton.setVisibility(quantity > 0 ? View.VISIBLE : View.GONE);
     }
 
 
