@@ -26,6 +26,7 @@ import com.mojoteahouse.mojotea.data.MojoImage;
 import com.mojoteahouse.mojotea.data.MojoMenu;
 import com.mojoteahouse.mojotea.data.Order;
 import com.mojoteahouse.mojotea.data.Topping;
+import com.mojoteahouse.mojotea.fragment.AboutFragment;
 import com.mojoteahouse.mojotea.fragment.ClosedNowDialogFragment;
 import com.mojoteahouse.mojotea.fragment.LoadingDialogFragment;
 import com.mojoteahouse.mojotea.fragment.MojoMenuFragment;
@@ -143,7 +144,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_about:
-                updateFragment(TAG_ABOUT, false);
+                //updateFragment(TAG_ABOUT, false);
+                Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+                startActivityForResult(intent, 12);
                 break;
         }
 
@@ -204,7 +207,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case TAG_ABOUT:
-                getSupportActionBar().setTitle(R.string.nav_about_title);
+                //getSupportActionBar().setTitle(R.string.nav_about_title);
+                getSupportActionBar().setTitle("");
+                if (fragment == null || !(fragment instanceof AboutFragment) || createNewFragment) {
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.main_content, AboutFragment.newInstance(), tag)
+                            .commit();
+                }
                 break;
         }
     }

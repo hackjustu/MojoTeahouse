@@ -23,7 +23,7 @@
     <string name="action_close_navigation_drawer">Close navigation drawer</string>
     <string name="nav_menu_title">Menu</string>
     <string name="nav_orders_title">Orders</string>
-    <string name="nav_about_title">About &#38; Feedback</string>
+    <string name="nav_about_title">About</string>
 
     <!-- Mojo Menu Fragment -->
     <string name="mojo_menu_price_text">$%.2f</string>
@@ -89,10 +89,10 @@
 
     <!-- Post Order Activity -->
     <string name="got_it_button_text">Got It!</string>
-    <string name="order_price_format">Total: $%.2f</string>
-    <string name="order_deliver_time_format">Deliver by %s today</string>
+    <string name="order_price_format">$%.2f</string>
+    <string name="order_deliver_time_format">%s</string>
     <string name="question_text">Questions?</string>
-    <string name="contact_text">Contact Mr. Mojo</string>
+    <string name="contact_text">CONTACT</string>
 
     <!-- Order History Fragment -->
     <string name="get_order_history_error_message">Cannot get order history information. Please reopen the page.</string>
@@ -106,5 +106,12 @@
     <!-- Closed Now Dialog -->
     <string name="prepare_for_food_text">&#8230;and are preparing for more food!</string>
     <string name="browse_app_text">You can still browse our menu and add to cart. When we are open you will be able to place order as always.</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_about">AboutActivity</string>
+
+    <!-- About Activity -->
+    <string name="mojo_introduction">It was a humorously perilouse business for both of us. For, before we prceed fruther, it must be said tha the monkey-rop was fast at both ends; afst to Queequeg\'s broad</string>
 
 </resources>

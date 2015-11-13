@@ -338,7 +338,7 @@ public class EditMojoItemActivity extends AppCompatActivity implements View.OnCl
             orderItem.setSelectedToppingsList(selectedToppings);
             orderItem.setNote(noteEditText.getText() == null ? "" : noteEditText.getText().toString());
             orderItem.setOrderPlaced(false);
-            final String orderItemId = String.valueOf(System.currentTimeMillis());
+            final String orderItemId = String.valueOf(System.currentTimeMillis());//TODO: 多人同时订单？
             orderItem.setOrderItemId(orderItemId);
 
             orderItem.pinInBackground(MojoTeaApp.ORDER_ITEM_GROUP, new SaveCallback() {

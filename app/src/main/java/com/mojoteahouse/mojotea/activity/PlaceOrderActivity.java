@@ -597,6 +597,7 @@ public class PlaceOrderActivity extends AppCompatActivity implements View.OnClic
 
                             SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("h:mm a", Locale.US);
                             Intent intent = new Intent(PlaceOrderActivity.this, PostOrderActivity.class);
+                            intent.putExtra(PostOrderActivity.EXTRA_CUSTOMER_NAME, customerName);
                             intent.putExtra(PostOrderActivity.EXTRA_TOTAL_PRICE, order.getTotalPrice());
                             intent.putExtra(PostOrderActivity.EXTRA_DELIVER_TIME,
                                     simpleTimeFormat.format(deliverTime));

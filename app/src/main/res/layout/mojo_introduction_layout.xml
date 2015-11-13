@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:background="?attr/colorPrimary">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/transparent" />
+
+    <ImageView
+        android:id="@+id/mojo_profile"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/dummy_image" />
+
+    <TextView
+        android:id="@+id/mojo_item_name_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/mojo_profile"
+        android:paddingBottom="25dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="20dp"
+        android:singleLine="false"
+        android:text="@string/mojo_introduction"
+        android:textColor="@color/white"
+        android:textSize="15sp" />
+
+</RelativeLayout>
+

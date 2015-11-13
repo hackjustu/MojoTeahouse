@@ -10,4 +10,5 @@
     <dimen name="card_view_padding">10dp</dimen>
     <dimen name="toolbar_large_height">180dp</dimen>
     <dimen name="button_height">56dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>
